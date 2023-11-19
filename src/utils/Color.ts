@@ -1,0 +1,17 @@
+export const Colors = {
+    white: '#FFFFFF',
+    black: '#000000',
+    gray: "#999999",
+    button: 'darkcyan',
+    title: 'darkcyan',
+    link: 'blue',
+    background: 'rgba(255, 255, 255, 0.8)',
+    error: 'red',
+    background_header: '#2ecc71',
+    box_shadow: '#3498db',
+    pink: '#FEA47F',
+    gender: '#25CCF7',
+    box_background: 'rgba(236, 236, 236, 0.3)',
+    green: '#009432',
+    light_green: '#26de81',
+}
