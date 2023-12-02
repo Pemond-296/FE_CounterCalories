@@ -9,6 +9,8 @@ import SetInformation from './src/screens/User/SetInformation';
 import SetGoal from './src/screens/User/SetGoal';
 import Review from './src/screens/User/CreateFood';
 import CreateFood from './src/screens/User/CreateFood';
+import FindFood from './src/screens/User/FindFood';
+
 const Stack = createNativeStackNavigator();
 
 const AppChild = () => {
@@ -26,6 +28,7 @@ const AppChild = () => {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="CreateFood" component={CreateFood} />
             <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="FindFood" component={FindFood} />
           </>
         ) : (
           <View>Nothing here</View>

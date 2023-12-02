@@ -58,11 +58,11 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
   });
   const [isFocused, setIsFocused] = useState(0);
 
-  const handleRegister = (data: any) => {
+  const handleFindFood = (data: any) => {
     const gender = isMale ? 'Male' : 'Female';
     data = {...data, height, weight, age, gender};
     //@ts-ignore
-    navigation.navigate('setGoal', {data: data});
+    navigation.navigate('FindFood', {data: data});
   };
   const [unit, setUnit] = useState('g');
 
@@ -153,7 +153,7 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
           <Button
             title="Tiếp tục"
             color={Colors.green}
-            onPress={handleSubmit(handleRegister)}
+            onPress={handleSubmit(handleFindFood)}
           />
         </View>
       </View>
