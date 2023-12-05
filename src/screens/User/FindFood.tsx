@@ -20,18 +20,6 @@ import {Food} from '../../utils/TypeData';
 
 const FindFood: React.FC<ScreenProps | any> = ({route}) => {
   const navigation = useNavigation();
-  const {data} = route.params;
-  const [choose, setChoose] = useState(1);
-  const [foodName, setFoodName] = useState('');
-
-  const handleFoodNameChange = (text: string) => {
-    setFoodName(text);
-  };
-  const handleNext = () => {
-    //@ts-ignore
-    navigation.navigate('FindFood', {
-    });
-  };
   const schema: ZodType<timeActivity> = z.object({
     namefood: z
       .string()
@@ -43,21 +31,10 @@ const FindFood: React.FC<ScreenProps | any> = ({route}) => {
       .max(0, 'Thông tin không hợp lệ'),
   });
   const {
-    register,
-    handleSubmit,
-    setValue,
     formState: {errors},
   } = useForm<Food>({
     resolver: zodResolver(schema),
   });
-  const [isFocused, setIsFocused] = useState(0);
-
-  const handleFindFood = (data: any) => {
-    const gender = isMale ? 'Male' : 'Female';
-    data = {...data, height, weight, age, gender};
-    //@ts-ignore
-    navigation.navigate('FindFood', {data: data});
-  };
   const [searchText, setSearchText] = useState('');
   const handleSearch = () => {
     console.log('Đã tìm kiếm:', searchText);
