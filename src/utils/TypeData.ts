@@ -39,3 +39,7 @@ export type timeActivity = {
     minute: number,
     day: number,
 }
+export type Food = {
+    namefood: string,
+    numberkg: string,
+}

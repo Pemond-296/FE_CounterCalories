@@ -16,7 +16,7 @@ import {ScreenProps} from '../../utils/TypeData';
 import {z, ZodType} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
-import {timeActivity} from '../../utils/TypeData';
+import {Food} from '../../utils/TypeData';
 
 const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
   const navigation = useNavigation();
@@ -34,8 +34,7 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
 
   const handleNext = () => {
     //@ts-ignore
-    navigation.navigate('reviewIndex', {
-      data: {...data, bmi: BMI, choose: choose},
+    navigation.navigate('FindFood', {
     });
   };
   const schema: ZodType<timeActivity> = z.object({
@@ -53,7 +52,7 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
     handleSubmit,
     setValue,
     formState: {errors},
-  } = useForm<timeActivity>({
+  } = useForm<Food>({
     resolver: zodResolver(schema),
   });
   const [isFocused, setIsFocused] = useState(0);
@@ -69,6 +68,7 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
   const handleTabPress = (selectedUnit) => {
     setUnit(selectedUnit);
   };
+  
   return (
     <>
       <StatusBar
@@ -153,7 +153,7 @@ const CreateFood: React.FC<ScreenProps | any> = ({route}) => {
           <Button
             title="Tiếp tục"
             color={Colors.green}
-            onPress={handleSubmit(handleFindFood)}
+            onPress={() => handleNext()}
           />
         </View>
       </View>
