@@ -15,15 +15,15 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
     const navigation = useNavigation()
     const {data} = route.params
     const BMI: number = data.weight / ((data.height / 100) * (data.height / 100))
-    const [choose, setChoose] = useState(1)
+    const [choose, setChoose] = useState<number>(0)
 
     useEffect(() => {
-        BMI < 25 ? (BMI > 18.5 ? setChoose(2) : setChoose(3)) : null
+        BMI < 25 ? (BMI > 18.5 ? setChoose(2) : setChoose(3)) : setChoose(1)
     }, [])
 
-    const handleNext = () => {
+    const handleNext = (selectedOption: number) => {
         //@ts-ignore
-        navigation.navigate("reviewIndex", {data: {...data, bmi: BMI, choose: choose}})
+        navigation.navigate("reviewIndex", {data: {...data, bmi: BMI, choose: selectedOption}})
     }
 
     return( 
@@ -48,7 +48,12 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
                 <Text style={styles.text2}>
                     Mục tiêu của bạn là gì?
                 </Text>
-                <TouchableOpacity onPress={() => handleNext()}>
+                <TouchableOpacity onPress={() => {
+                        setChoose(1)
+                        setTimeout(() => {
+                            handleNext(1)
+                        },100)
+                    }}>
                     <View 
                         style={[styles.choose, choose == 1 && styles.focused]}
                         >
@@ -60,7 +65,12 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
                         </Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleNext()}>
+                <TouchableOpacity onPress={() => {
+                        setChoose(2)
+                        setTimeout(() => {
+                            handleNext(2)
+                        },100)
+                    }}>
                     <View 
                         style={[styles.choose, choose == 2 && styles.focused]}
                         >
@@ -72,7 +82,12 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
                         </Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleNext()}>
+                <TouchableOpacity onPress={() => {
+                        setChoose(3)
+                        setTimeout(() => {
+                            handleNext(3)
+                        },100)
+                    }}>
                     <View 
                         style={[styles.choose, choose == 3 && styles.focused]}
 
@@ -135,7 +150,7 @@ const styles = StyleSheet.create({
         borderColor: Colors.white,
         ...Platform.select({
             ios: {
-              shadowColor: 'black',
+              shadowColor: Colors.black,
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.3,
               shadowRadius: 4,

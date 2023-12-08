@@ -20,9 +20,11 @@ import {z, ZodType} from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 import { useForm } from "react-hook-form";
 import { timeActivity } from '../../utils/TypeData';
+import { ScreenProps } from "../../utils/TypeData";
 
-const SetInformation = () => {
-
+const SetInformation: React.FC<ScreenProps | any> = ({route}) => {
+    const {user_data} = route.params
+    console.log(user_data)
     const navigation = useNavigation();
 
     const [isFocused, setIsFocused] = useState(0)
@@ -276,7 +278,7 @@ const styles = StyleSheet.create(
         borderRadius: 16,
         ...Platform.select({
             ios: {
-              shadowColor: 'black',
+              shadowColor: Colors.black,
               shadowOffset: { width: 0, height: 2 },
               shadowOpacity: 0.3,
               shadowRadius: 4,
@@ -305,7 +307,6 @@ const styles = StyleSheet.create(
         borderBottomWidth: 1,
         borderBottomColor: Colors.black,
         padding: 10,
-        fontsize: 16,
         fontWeight: 'bold',
         opacity: 0.5,
         alignItems: 'center',
@@ -428,10 +429,11 @@ const styles = StyleSheet.create(
         borderColor: Colors.white,
     },
     button: {
-        marginTop: 10,
+        marginTop: 'auto',
         width: 150,
         borderRadius: 16,
         overflow: 'hidden',
+        marginBottom: 30,
     },
     error:{
         color: Colors.error,
