@@ -29,7 +29,7 @@ const Register = () => {
                   .min(6, 'Username should be at least 6 characters'),
       password: z.string()
                   .min(1, "Password is required")
-                  .min(8, 'Password should be at least 8 characters'),
+                  .min(6, 'Password should be at least 6 characters'),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -48,7 +48,6 @@ const Register = () => {
 
 
   const handleNext = (data: any) => {
-    console.log(data)
     // @ts-ignore
     navigation.navigate("setInformation")
   }
