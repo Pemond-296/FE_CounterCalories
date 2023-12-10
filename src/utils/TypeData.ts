@@ -24,14 +24,14 @@ export type userRegister = userLogin & {
 }
 
 // Đăng kí đầy đủ thông tin
-export type userSignup = userLogin & {
+export type userSignup = {
     age: number,
     height: number,
     weight: number,
+    gender: string,
 }
 
 export type updatePassword = {
-    userId: number,
     password: string,
 }
 

@@ -24,30 +24,15 @@ import UserFood from './src/screens/User/Food';
 import UserPost from './src/screens/User/Post';
 import UserPersonal from './src/screens/User/Personal';
 import DetailPost from './src/components/Post/DetailPost';
+import DetailFood from './src/components/Food/DetailFood';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const AppChild = () => {
-  const user: any | null = useState(true);
-  user.role = 1;
 
+const UserScreen = () => {
   return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-      {user === false ? (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="setInformation" component={SetInformation} />
-            <Stack.Screen name="setGoal" component={SetGoal} />
-            <Stack.Screen name="reviewIndex" component={Review} />
-          </>
-        </Stack.Navigator>
-      ) : // user
-      user.role === 2 ? (
-        <Tab.Navigator
+    <Tab.Navigator
           initialRouteName="Home"
           //@ts-ignore
           screenOptions={({route}) => ({
@@ -86,9 +71,12 @@ const AppChild = () => {
           <Tab.Screen name="Post" component={UserPost} />
           <Tab.Screen name="Person" component={UserPersonal} />
         </Tab.Navigator>
-      ) : (
-        // admin
-          <Tab.Navigator
+  )
+}
+
+const AdminScreen = () => {
+  return(
+    <Tab.Navigator
             initialRouteName="Home"
             //@ts-ignore
             screenOptions={({route}) => ({
@@ -125,9 +113,35 @@ const AppChild = () => {
             <Tab.Screen name="Food" component={AdminFood} />
             <Tab.Screen name="Person" component={AdminPerson} />
           </Tab.Navigator>
+      )
+}
+
+const AppChild = () => {
+  const user: any | null = useState(true);
+  user.role = 1;
+  return (
+    <NavigationContainer>
+      <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
+      {user !== false ? (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="setInformation" component={SetInformation} />
+            <Stack.Screen name="setGoal" component={SetGoal} />
+            <Stack.Screen name="reviewIndex" component={Review} />
+          </>
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          {user.role === 2 ?
+            <Stack.Screen name="UserScreen" component={UserScreen} /> :
+            <Stack.Screen name="AdminScreen" component={AdminScreen}/>  
+          }
+            <Stack.Screen name="DetailPost" component={DetailPost} />
+            <Stack.Screen name="DetailFood" component={DetailFood} />
+        </Stack.Navigator>
       )}
-      {/* Dùng chung */}
-        <Stack.Screen name='DetailPost' component={DetailPost}/>
     </NavigationContainer>
   );
 };

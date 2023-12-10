@@ -17,19 +17,21 @@ import { useForm } from "react-hook-form";
 
 import { Colors } from '../utils/Color';
 import { userRegister } from '../utils/TypeData';
+import { registerAPI } from '../services/User';
+import axios from 'axios';
 
 const Register = () => {
 
   const navigation = useNavigation();
-  
+
   const schema: ZodType<userRegister> = z
     .object({
       username: z.string()
                   .min(1, "Username is required")
-                  .min(6, 'Username should be at least 6 characters'),
+                  .min(8, 'Username should be at least 8 characters'),
       password: z.string()
                   .min(1, "Password is required")
-                  .min(6, 'Password should be at least 6 characters'),
+                  .min(8, 'Password should be at least 8 characters'),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -47,12 +49,11 @@ const Register = () => {
   })
 
 
-  const handleNext = (data: any) => {
+  const handleNext = async(data: any) => {
+    console.log(data)
     // @ts-ignore
-    navigation.navigate("setInformation")
+    // navigation.navigate("setInformation")
   }
-
-
     return (
       <>
         <StatusBar translucent backgroundColor="transparent" barStyle={"dark-content"}/>

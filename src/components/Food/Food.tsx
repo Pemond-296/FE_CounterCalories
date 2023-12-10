@@ -11,9 +11,10 @@ import {View,
 import { Colors } from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign'
 import { SmallLoading } from '../Loading';
+import { useNavigation } from '@react-navigation/native';
 
 const Food = () => {
-
+    const navigation = useNavigation()
     const [loading, setLoading] = useState<boolean>(false)
     const handleDelete = () => {
         console.log("delete r cu")
@@ -23,12 +24,10 @@ const Food = () => {
         }, 1000)
     }
 
-    const handleEdit = () => {
-        console.log("edit r cu")
-    }
-
     const handleDetailFood = () => {
         console.log("Detail Here")
+        //@ts-ignore
+        navigation.navigate("DetailFood")
     }
 
     return (
@@ -49,13 +48,6 @@ const Food = () => {
                 </Text>
             </View>
             <View style={styles.action}>
-                <TouchableOpacity style={styles.icon} onPress={handleEdit}>
-                    <Icon
-                        name='edit'
-                        size={20}
-                        color={Colors.black}
-                    />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={handleDelete} style={styles.delete}>
                     {!loading ? (                    
                     <Icon
@@ -92,7 +84,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     textarea: {
-        width: 250,
+        width: 270,
         justifyContent: 'space-around',
         paddingLeft: 10,
     },

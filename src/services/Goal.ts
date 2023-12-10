@@ -1,8 +1,9 @@
 import axios from "axios";
-import { goal } from "../utils/TypeData";
+import {goal} from "../utils/TypeData";
+import { BaseURL } from "./BaseUrl";
 
 const goalAPI = axios.create({
-    baseURL: process.env.REACT_NATIVE_NUTRITION_APP + `/api/goals`,
+    baseURL: BaseURL + `/api/goals`,
     withCredentials: false,
     headers: {
         'Content-Type' : 'application/json',
@@ -10,9 +11,9 @@ const goalAPI = axios.create({
     }
 })
 
-export const createGoalAPI = async (payload: goal) => {
+export const createGoalAPI = async (id: number, payload: goal) => {
     try{
-        const response = await goalAPI.post('', payload);
+        const response = await goalAPI.post('/' + id, payload);
         return response
     }
     catch(err){

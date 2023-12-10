@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,15 +6,24 @@ import {
   Platform,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  StatusBar,
+  FlatList,
+  ScrollView,
 } from 'react-native';
 import {Colors} from '../../utils/Color';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon1 from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
+import DetailCalory from '../Food/Calories';
+import Comment from './Comment';
 
-const DetailPost:React.FC<any> = ({onAction, onCloseAction}) => {
+const DetailPost: React.FC<any> = () => {
+  const navigation = useNavigation();
+
   const [user, setUser] = useState<any>(false);
+
   const [isLike, setIsLike] = useState<boolean>(false);
   const handleLike = () => {
     setIsLike(!isLike);
@@ -23,21 +32,31 @@ const DetailPost:React.FC<any> = ({onAction, onCloseAction}) => {
   const [isFollow, setFollow] = useState<boolean>(false);
   const handleFollow = () => {
     setFollow(!isFollow);
-  };
+  }
 
-  const [isAction, setIsAction] = useState<boolean>(false);
-  const handleAction = () => {
-    setIsAction(true);
-    onAction()
-  };
-  const handlePressOut = (e: any) => {
-    setIsAction(false);
-    onCloseAction()
-  };
+  const handleBack = () => {
+    console.log("back")
+    navigation.goBack();
+  }
 
   return (
-    <TouchableWithoutFeedback onPressOut={handlePressOut}>
-
+    <>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle={'light-content'}
+      />
+      <View style={styles.header1}>
+        <TouchableOpacity style={styles.icon2} onPress={handleBack}>
+            <Icon1
+            name="arrow-back"
+            size={25}
+            color={Colors.white}
+            />
+        </TouchableOpacity>
+        <Text style={styles.text8}>Bài viết của Pemond</Text>
+      </View>
+      <ScrollView>
         <View style={styles.container}>
           <View style={styles.header}>
             <View style={styles.name}>
@@ -89,23 +108,6 @@ const DetailPost:React.FC<any> = ({onAction, onCloseAction}) => {
                 style={styles.icon}
                 color={Colors.black}
               />
-
-              {!user ? (
-                <Icon
-                  name="dots-vertical"
-                  size={35}
-                  color={Colors.black}
-                  style={styles.delete}
-                  onPress={() => handleAction()}
-                />
-              ) : (
-                <Ionicon
-                  name="warning-outline"
-                  size={36}
-                  style={styles.icon1}
-                  color={Colors.black}
-                />
-              )}
             </View>
             <View style={styles.action}>
               <Text>3 lượt thích</Text>
@@ -113,7 +115,34 @@ const DetailPost:React.FC<any> = ({onAction, onCloseAction}) => {
             </View>
           </View>
         </View>
-    </TouchableWithoutFeedback>
+
+        {/* Calo Consume just user can see */}
+        {1 && (
+          <View style={styles.calory}>
+            <View>
+              <Text style={styles.text9}>Tổng năng lượng</Text>
+              <DetailCalory />
+            </View>
+            <View>
+              <Text style={styles.text9}>Chi tiết dinh dưỡng</Text>
+              {Array(10)
+                .fill(null)
+                .map((_, index) => (
+                  <View style={styles.detail}>
+                    <Text style={styles.text10}>Socola</Text>
+                    <Text style={styles.text11}>2 cái (200g)</Text>
+                    <DetailCalory />
+                  </View>
+                ))}
+            </View>
+          </View>
+        )}
+        <View style={styles.calory}>
+            <Text style={styles.text9}>Bình luận</Text>
+            <Comment/>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -125,7 +154,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.white,
     backgroundColor: Colors.white,
-    marginBottom: 10,
+    marginBottom: 5,
     paddingBottom: 10,
     ...Platform.select({
       ios: {
@@ -244,7 +273,70 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 'auto',
   },
+  header1: {
+    flexDirection: 'row',
+    paddingTop: 30,
+    width: '100%',
+    height: 70,
+    backgroundColor: Colors.background_header,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  text8: {
+    color: Colors.white,
+    fontSize: 20,
+    fontWeight: 'bold',
+    width: '100%',
+    textAlign: 'center',
+  },
+  icon2: {
+    position: 'absolute',
+    left: 0,
+    top: 28,
+    padding: 10,
+    zIndex: 999,
+  },
 
+  calory: {
+    width: '100%',
+    height: 'auto',
+    minHeight: 300,
+    borderWidth: 1,
+    borderColor: Colors.white,
+    backgroundColor: Colors.white,
+    marginBottom: 10,
+    paddingBottom: 10,
+  },
+  text9: {
+    borderWidth: 1,
+    padding: 5,
+    paddingLeft: 20,
+    borderColor: Colors.light_green,
+    backgroundColor: Colors.light_green,
+    color: Colors.black,
+    fontSize: 18,
+    opacity: 0.8,
+  },
+  detail: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.line,
+  },
+  text10: {
+    paddingLeft: 25,
+    paddingTop: 10,
+    fontSize: 18,
+    fontWeight: '700',
+    color: Colors.black,
+  },
+  text11: {
+    marginLeft: 25,
+    marginRight: 25,
+    paddingBottom: 5,
+    fontSize: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.line,
+  },
 });
 
 export default DetailPost;
