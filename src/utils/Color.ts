@@ -14,4 +14,5 @@ export const Colors = {
     box_background: 'rgba(236, 236, 236, 0.3)',
     green: '#009432',
     light_green: '#26de81',
+    ban : "#e74c3c",
 }
