@@ -12,6 +12,8 @@ export const Colors = {
     pink: '#FEA47F',
     gender: '#25CCF7',
     box_background: 'rgba(236, 236, 236, 0.3)',
+    line: 'rgba(0, 0, 0, 0.2)',
     green: '#009432',
     light_green: '#26de81',
+    ban : "#e74c3c",
 }

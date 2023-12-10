@@ -23,8 +23,8 @@ import { timeActivity } from '../../utils/TypeData';
 import { ScreenProps } from "../../utils/TypeData";
 
 const SetInformation: React.FC<ScreenProps | any> = ({route}) => {
-    const {user_data} = route.params
-    console.log(user_data)
+    // const {user_data} = route.params
+    // console.log(user_data)
     const navigation = useNavigation();
 
     const [isFocused, setIsFocused] = useState(0)

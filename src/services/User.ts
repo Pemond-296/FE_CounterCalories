@@ -1,8 +1,9 @@
 import axios from "axios";
 import { updatePassword, userLogin, userSignup} from "../utils/TypeData";
+import { BaseURL } from "./BaseUrl";
 
 const userAPI = axios.create({
-    baseURL: process.env.REACT_NATIVE_NUTRITION_APP + `/api/user`,
+    baseURL: BaseURL+ `/api/user`,
     withCredentials: false,
     headers: {
         'Content-Type' : 'application/json',
@@ -20,7 +21,7 @@ export const loginAPI = async (payload: userLogin) => {
     }
 }
 
-export const registerAPI = async (payload: userSignup) => {
+export const registerAPI = async (payload: userLogin) => {
     try{
         const response = await userAPI.post('/sign-up', payload);
         return response
@@ -52,10 +53,28 @@ export const changePassword = async (payload: updatePassword) => {
 
 export const viewProfile = async (id: number) => {
     try{
-        const response = await userAPI.get('/view-profile' + id);
+        const response = await userAPI.get('/view-profile/' + id);
         return response
     }
     catch(err){
         throw err
     } 
+}
+
+export const deleteUser = async(id: number) => {
+    try{
+        const response = await userAPI.delete('/'+ id)
+        return response
+    }catch(err){
+        throw err
+    }
+}
+
+export const createAdmin = async(payload: userLogin) => {
+    try{
+        const response = await userAPI.post('/admin', payload)
+        return response
+    }catch(err){
+        throw err
+    }
 }

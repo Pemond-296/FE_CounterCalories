@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 
 import {Colors} from '../../utils/Color';
-import Food from '../../components/Food/Food';
-import Activity from '../../components/Activity/Activity';
 import Icon from 'react-native-vector-icons/EvilIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons'
+import ViewUser from '../../components/User/ViewUser';
+import BanUser from '../../components/User/BanUser';
 
-const AdminFood = () => {
+const AdminPerSon = () => {
   const [active, setActive] = useState<boolean>(false);
   return (
     <>
@@ -26,7 +26,7 @@ const AdminFood = () => {
       />
       <View style={styles.header}>
         <Text style={styles.text1}>
-          {!active ? ' Quản lý thực phẩm' : 'Quản lý hoạt động'}
+          Quản lý người dùng
         </Text>
         <View style={styles.search}>
             <View style={styles.field}>
@@ -50,12 +50,12 @@ const AdminFood = () => {
         <Text
           style={[styles.text2, !active && styles.focus]}
           onPress={() => setActive(false)}>
-          Thực phẩm
+          Toàn bộ người dùng
         </Text>
         <Text
           style={[styles.text2, active && styles.focus]}
           onPress={() => setActive(true)}>
-          Hoạt động
+          Người dùng tạm khóa
         </Text>
       </View>
       <ScrollView
@@ -66,7 +66,7 @@ const AdminFood = () => {
         {Array(10)
           .fill(null)
           .map((_, index) =>
-            !active ? <Food key={index} /> : <Activity key={index} />,
+            !active ? <ViewUser key={index} /> : <BanUser key={index} />,
           )}
         <View style={styles.component1} />
       </ScrollView>
@@ -101,8 +101,8 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     borderBottomWidth: 1,
     borderColor: Colors.white,
-    paddingRight: 50,
-    paddingLeft: 70,
+    paddingRight: 30,
+    paddingLeft: 30,
     paddingBottom: 10,
   },
   focus: {
@@ -152,4 +152,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AdminFood;
+export default AdminPerSon;
