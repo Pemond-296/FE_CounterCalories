@@ -118,11 +118,11 @@ const AdminScreen = () => {
 
 const AppChild = () => {
   const user: any | null = useState(true);
-  user.role = 1;
+  user.role = 2;
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-      {user !== false ? (
+      {user == false ? (
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <>
             <Stack.Screen name="Login" component={Login} />

@@ -16,4 +16,5 @@ export const Colors = {
     green: '#009432',
     light_green: '#26de81',
     ban : "#e74c3c",
+    gray_green : "#8ae6b6"
 }
