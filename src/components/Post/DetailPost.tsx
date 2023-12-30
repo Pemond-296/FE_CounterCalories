@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,19 +11,24 @@ import {
   ScrollView,
 } from 'react-native';
 import {Colors} from '../../utils/Color';
-import Ionicon from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
 import DetailCalory from '../Food/Calories';
 import Comment from './Comment';
+import {userData} from '../../utils/Storage';
 
 const DetailPost: React.FC<any> = () => {
   const navigation = useNavigation();
 
-  const [user, setUser] = useState<any>(false);
-
+  const [user, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  }, []);
   const [isLike, setIsLike] = useState<boolean>(false);
   const handleLike = () => {
     setIsLike(!isLike);
@@ -32,11 +37,16 @@ const DetailPost: React.FC<any> = () => {
   const [isFollow, setFollow] = useState<boolean>(false);
   const handleFollow = () => {
     setFollow(!isFollow);
-  }
+  };
 
   const handleBack = () => {
-    console.log("back")
+    console.log('back');
     navigation.goBack();
+  };
+
+  const handleUserLike = (action: string) => {
+    //@ts-ignore
+    navigation.navigate("Follow",{data: action})
   }
 
   return (
@@ -48,11 +58,7 @@ const DetailPost: React.FC<any> = () => {
       />
       <View style={styles.header1}>
         <TouchableOpacity style={styles.icon2} onPress={handleBack}>
-            <Icon1
-            name="arrow-back"
-            size={25}
-            color={Colors.white}
-            />
+          <Icon1 name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.text8}>Bài viết của Pemond</Text>
       </View>
@@ -100,7 +106,7 @@ const DetailPost: React.FC<any> = () => {
                 size={30}
                 style={styles.icon}
                 color={isLike ? Colors.error : Colors.black}
-                onPress={() => handleLike()}
+                onPress={handleLike}
               />
               <Octicons
                 name="comment"
@@ -110,14 +116,16 @@ const DetailPost: React.FC<any> = () => {
               />
             </View>
             <View style={styles.action}>
-              <Text>3 lượt thích</Text>
+              <TouchableOpacity onPress={() => handleUserLike("Like")}>
+                <Text>3 lượt thích</Text>
+              </TouchableOpacity>
               <Text style={styles.text5}>0 bình luận</Text>
             </View>
           </View>
         </View>
 
         {/* Calo Consume just user can see */}
-        {1 && (
+        {user.role === 'USER' && (
           <View style={styles.calory}>
             <View>
               <Text style={styles.text9}>Tổng năng lượng</Text>
@@ -138,8 +146,8 @@ const DetailPost: React.FC<any> = () => {
           </View>
         )}
         <View style={styles.calory}>
-            <Text style={styles.text9}>Bình luận</Text>
-            <Comment/>
+          <Text style={styles.text9}>Bình luận</Text>
+          <Comment />
         </View>
       </ScrollView>
     </>

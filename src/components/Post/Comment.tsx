@@ -1,12 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-import {StyleSheet, View, Text, Image, TextInput} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {Colors} from '../../utils/Color';
 
 import Icon from 'react-native-vector-icons/AntDesign';
-import Send from "react-native-vector-icons/Feather"
+import Send from 'react-native-vector-icons/Feather';
 
 const Comment = () => {
+  const [content, setContent] = useState<string>('');
+  const handleComment = () => {};
+
   return (
     <View style={styles.container}>
       {Array(3)
@@ -22,18 +32,12 @@ const Comment = () => {
                 <Text style={styles.name}>Dương Vũ</Text>
                 <Text style={styles.time}>10/12/2023 9:58</Text>
               </View>
-              <Icon
-                name="edit"
-                size={20}
-                color={Colors.black}
-                style={styles.icon}
-              />
-              <Icon
-                name="delete"
-                size={20}
-                color={Colors.black}
-                style={styles.icon1}
-              />
+              <TouchableOpacity style={styles.icon}>
+                <Icon name="edit" size={20} color={Colors.black} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon1}>
+                <Icon name="delete" size={20} color={Colors.black} />
+              </TouchableOpacity>
             </View>
             <TextInput
               multiline
@@ -43,22 +47,13 @@ const Comment = () => {
             />
           </View>
         ))}
-        <View style={styles.commentfield}>
-            <Image
-                source={require('../../assets/Pemond.jpg')}
-                style={styles.img}
-            />
-            <TextInput
-                style={styles.text}
-                placeholder='Bình luận tại đây ...'
-            />
-            <Send
-                name='send'
-                size={20}
-                color={Colors.black}
-                style={styles.icon2}
-            />
-        </View>
+      <View style={styles.commentfield}>
+        <Image source={require('../../assets/Pemond.jpg')} style={styles.img} />
+        <TextInput style={styles.text} placeholder="Bình luận tại đây ..." />
+        <TouchableOpacity style={styles.icon2} onPress={handleComment}>
+          <Send name="send" size={20} color={Colors.black} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -124,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 50,
     marginRight: 10,
-  }, 
+  },
   icon2: {
     padding: 10,
     borderWidth: 1,

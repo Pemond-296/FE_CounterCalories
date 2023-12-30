@@ -72,9 +72,9 @@ const AdminHome = () => {
             >
                 {Array(activePost).fill(null).map((_, index) => (
                     <Post 
-                        key={index}
                         onAction = {isAction}
                         onCloseAction={onCloseAction}
+                        key={index}
                     />
                 ))}
             </ScrollView>

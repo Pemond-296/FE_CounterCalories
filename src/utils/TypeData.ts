@@ -49,3 +49,19 @@ export type goal = {
     fat: number,
     protein: number,
 }
+
+
+// Food
+
+export type creatFood = {
+    name: string,
+    kcal: number,
+    carbs: number,
+    fat: number,
+    protein: number,
+}
+
+export type creatActivity = {
+    name: string,
+    kcal: number,
+}

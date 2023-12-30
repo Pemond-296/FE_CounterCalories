@@ -25,123 +25,135 @@ import UserPost from './src/screens/User/Post';
 import UserPersonal from './src/screens/User/Personal';
 import DetailPost from './src/components/Post/DetailPost';
 import DetailFood from './src/components/Food/DetailFood';
+import {userData} from './src/utils/Storage';
+import Splash from './src/screens/Splash';
+import DetailUser from './src/components/User/DetailUser';
+import Follow from './src/components/User/Follow';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-
 const UserScreen = () => {
   return (
     <Tab.Navigator
-          initialRouteName="Home"
-          //@ts-ignore
-          screenOptions={({route}) => ({
-            tabBarIcon: ({focused, color, size}) => {
-              let iconName: string;
-              let rn: string = route.name;
+      initialRouteName="Home"
+      //@ts-ignore
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName: string;
+          let rn: string = route.name;
 
-              if (rn === 'Home') {
-                iconName = focused ? 'home' : 'home-outline';
-              } else if (rn === 'Food') {
-                iconName = focused ? 'fast-food' : 'fast-food-outline';
-              } else if (rn === 'Post') {
-                iconName = focused ? 'share-social' : 'share-social-outline';
-              } else if (rn === 'Person') {
-                iconName = focused ? 'person' : 'person-outline';
-              }
-              return (
-                <Ionicons
-                  // @ts-ignore
-                  name={iconName}
-                  size={size}
-                  color={color}
-                />
-              );
-            },
-            tabBarShowLabel: false,
-            tabBarActiveTintColor: Colors.gender,
-            tabBarInactiveTintColor: Colors.gray,
-            tabBarStyle: {
-              height: 50,
-            },
-            headerShown: false,
-          })}>
-          <Tab.Screen name="Home" component={UserHome} />
-          <Tab.Screen name="Food" component={UserFood} />
-          <Tab.Screen name="Post" component={UserPost} />
-          <Tab.Screen name="Person" component={UserPersonal} />
-        </Tab.Navigator>
-  )
-}
+          if (rn === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (rn === 'Food') {
+            iconName = focused ? 'fast-food' : 'fast-food-outline';
+          } else if (rn === 'Post') {
+            iconName = focused ? 'share-social' : 'share-social-outline';
+          } else if (rn === 'Person') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return (
+            <Ionicons
+              // @ts-ignore
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
+        },
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors.gender,
+        tabBarInactiveTintColor: Colors.gray,
+        tabBarStyle: {
+          height: 50,
+        },
+        headerShown: false,
+      })}>
+      <Tab.Screen name="Home" component={UserHome} />
+      <Tab.Screen name="Food" component={UserFood} />
+      <Tab.Screen name="Post" component={UserPost} />
+      <Tab.Screen name="Person" component={UserPersonal} />
+    </Tab.Navigator>
+  );
+};
 
 const AdminScreen = () => {
-  return(
+  return (
     <Tab.Navigator
-            initialRouteName="Home"
-            //@ts-ignore
-            screenOptions={({route}) => ({
-              tabBarIcon: ({focused, color, size}) => {
-                let iconName: string;
-                let rn: string = route.name;
+      initialRouteName="Home"
+      //@ts-ignore
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName: string;
+          let rn: string = route.name;
 
-                if (rn === 'Home') {
-                  iconName = focused ? 'home' : 'home-outline';
-                } else if (rn === 'Food') {
-                  iconName = focused ? 'fast-food' : 'fast-food-outline';
-                } else if (rn === 'Person') {
-                  iconName = focused ? 'person' : 'person-outline';
-                }
-                return (
-                  <Ionicons
-                    // @ts-ignore
-                    name={iconName}
-                    size={size}
-                    color={color}
-                  />
-                );
-              },
-              tabBarShowLabel: false,
-              tabBarActiveTintColor: Colors.gender,
-              tabBarInactiveTintColor: Colors.gray,
-              tabBarStyle: {
-                height: 50,
-              },
-              headerShown: false,
-              tabBarHideOnKeyboard: true,
-            })}>
-            <Tab.Screen name="Home" component={AdminHome} />
-            <Tab.Screen name="Food" component={AdminFood} />
-            <Tab.Screen name="Person" component={AdminPerson} />
-          </Tab.Navigator>
-      )
-}
+          if (rn === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (rn === 'Food') {
+            iconName = focused ? 'fast-food' : 'fast-food-outline';
+          } else if (rn === 'Person') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+          return (
+            <Ionicons
+              // @ts-ignore
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
+        },
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors.gender,
+        tabBarInactiveTintColor: Colors.gray,
+        tabBarStyle: {
+          height: 50,
+        },
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+      })}>
+      <Tab.Screen name="Home" component={AdminHome} />
+      <Tab.Screen name="Food" component={AdminFood} />
+      <Tab.Screen name="Person" component={AdminPerson} />
+    </Tab.Navigator>
+  );
+};
 
 const AppChild = () => {
-  const user: any | null = useState(true);
-  user.role = 1;
+  const [user, setUser] = useState<any | null>(null);
+  const fetchData = async () => {
+    const data: any = await userData();
+    setUser(data);
+  }
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-      {user !== false ? (
         <Stack.Navigator screenOptions={{headerShown: false}}>
-          <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-            <Stack.Screen name="setInformation" component={SetInformation} />
-            <Stack.Screen name="setGoal" component={SetGoal} />
-            <Stack.Screen name="reviewIndex" component={Review} />
-          </>
+          <Stack.Screen name="Splash" component={Splash} />
+          {user && user.role !== 'ADMIN' ? (
+            <Stack.Screen name="Screen" component={UserScreen} />
+          ) : (
+            <Stack.Screen name="Screen" component={AdminScreen} />
+          )}
+          
+          <Stack.Screen name="DetailPost" component={DetailPost} />
+          <Stack.Screen name="DetailFood" component={DetailFood} />
+          <Stack.Screen name="DetailUser" component={DetailUser}/>
+          
+          <Stack.Screen name="Follow" component={Follow} />
+
+
+
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="setInformation" component={SetInformation} />
+          <Stack.Screen name="setGoal" component={SetGoal} />
+          <Stack.Screen name="reviewIndex" component={Review} />
+
         </Stack.Navigator>
-      ) : (
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          {user.role === 2 ?
-            <Stack.Screen name="UserScreen" component={UserScreen} /> :
-            <Stack.Screen name="AdminScreen" component={AdminScreen}/>  
-          }
-            <Stack.Screen name="DetailPost" component={DetailPost} />
-            <Stack.Screen name="DetailFood" component={DetailFood} />
-        </Stack.Navigator>
-      )}
     </NavigationContainer>
   );
 };

@@ -14,8 +14,8 @@ export const createFood = async(payload: any) => {
     try{
         const response = await foodAPI.post("", payload)
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response.data
     }
 }
 
@@ -23,8 +23,8 @@ export const viewListFood = async() => {
     try{
         const response = await foodAPI.get('')
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response
     }
 }
 
@@ -32,8 +32,8 @@ export const viewDetailFood = async(id: number) => {
     try{
         const response = await foodAPI.get('/'+ id)
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response
     }
 }
 
@@ -41,8 +41,8 @@ export const deleteFood = async(id: number) => {
     try{
         const response = await foodAPI.delete('/'+ id)
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response
     }
 }
 
@@ -50,8 +50,8 @@ export const findFood = async(param: string) => {
     try{
         const response = await foodAPI.get('/query?q='+ param)
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response
     }
 }
 
@@ -59,7 +59,7 @@ export const publicFood = async(id: number, payload: any) => {
     try{
         const response = await foodAPI.put('/'+ id, payload)
         return response
-    }catch(err){
-        throw err
+    }catch(err : any){
+        return err.response
     }
 }

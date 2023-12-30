@@ -91,12 +91,12 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
     }
 
     const handleNext = async () =>{
-        try {
-            const response = await createGoalAPI(payload)
-        }
-        catch(err){
-            throw err
-        }
+        // try {
+        //     const response = await createGoalAPI(payload)
+        // }
+        // catch(err){
+        //     throw err
+        // }
     }
 
     return( 

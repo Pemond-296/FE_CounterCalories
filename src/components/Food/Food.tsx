@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import {View, 
     Text, 
     StyleSheet,
-    StatusBar,
-    Platform,
-    Button,
     Image,
     TouchableOpacity,
 } from 'react-native'
@@ -13,7 +10,7 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import { SmallLoading } from '../Loading';
 import { useNavigation } from '@react-navigation/native';
 
-const Food = () => {
+const Food:React.FC<any> = ({name, unit, kcal, img, id}) => {
     const navigation = useNavigation()
     const [loading, setLoading] = useState<boolean>(false)
     const handleDelete = () => {
@@ -36,15 +33,15 @@ const Food = () => {
             onPress={handleDetailFood}
             >
             <Image
-                source={require('../../assets/takoyaki.jpg')}
+                source={img}
                 style={styles.img}
             />
             <View style={styles.textarea}>
                 <Text style={styles.text1}>
-                    Takoyaki và những người bạn
+                    {name}
                 </Text>
                 <Text style={styles.text2}>
-                    100g - 230 calo
+                    {unit} - {kcal}kcal
                 </Text>
             </View>
             <View style={styles.action}>

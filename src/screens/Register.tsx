@@ -50,9 +50,10 @@ const Register = () => {
 
 
   const handleNext = async(data: any) => {
-    console.log(data)
-    // @ts-ignore
-    // navigation.navigate("setInformation")
+    const response = await registerAPI(data)
+    console.log(response.data)
+    //@ts-ignore
+    navigation.navigate("setInformation")
   }
     return (
       <>
