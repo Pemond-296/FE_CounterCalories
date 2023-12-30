@@ -120,6 +120,7 @@ const AdminScreen = () => {
 };
 
 const AppChild = () => {
+<<<<<<< HEAD
   const [user, setUser] = useState<any | null>(null);
   const fetchData = async () => {
     const data: any = await userData();
@@ -131,6 +132,14 @@ const AppChild = () => {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
+=======
+  const user: any | null = useState(true);
+  user.role = 2;
+  return (
+    <NavigationContainer>
+      <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
+      {user == false ? (
+>>>>>>> 3da9cb0ff2083245ebef4aa905f6a67a06eb3176
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Splash" component={Splash} />
           {user && user.role !== 'ADMIN' ? (
