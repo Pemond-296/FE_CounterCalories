@@ -16,8 +16,8 @@ export const createGoalAPI = async (id: number, payload: goal) => {
         const response = await goalAPI.post('/' + id, payload);
         return response
     }
-    catch(err){
-        throw err
+    catch(err : any){
+        return err.response
     }
 }
 
@@ -26,7 +26,7 @@ export const viewGoalAPI = async (user_id: number) => {
         const response = await goalAPI.get('/' + user_id);
         return response
     }
-    catch(err){
-        throw err
+    catch(err : any){
+        return err.response
     }
 }
