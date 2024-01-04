@@ -36,11 +36,9 @@ const CreateFood: React.FC<any> = ({onClose}) => {
   useEffect(() => {
     const fetchData = async () => {
       const response: any = await userData();
-      console.log(response)
       setUser(response);
     };
     fetchData();
-
   },[]);
 
   const handleExit = () => {
@@ -115,7 +113,8 @@ const CreateFood: React.FC<any> = ({onClose}) => {
 
   // Xử lý API tạo ở đây
   const handleCreate = async (data: any) => {
-    const payload = {foodName: data.name, 
+    const payload = {
+        foodName: data.name, 
         calories: data.kcal, 
         unitType: value, 
         image: imgurl, 
@@ -123,11 +122,10 @@ const CreateFood: React.FC<any> = ({onClose}) => {
         carbs: data.carbs,
         fat: data.fat,
         protein:data.protein,
-
       }
     console.log(payload);
     const response = await createFood(payload)
-    console.log(response)
+    console.log(response.data.data)
     // Thoát form tạo
     handleExit()
   }

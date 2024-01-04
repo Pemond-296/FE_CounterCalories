@@ -22,4 +22,5 @@ export const Colors = {
     protein: "#ff7f50",
     kcal: "#3742fa",
     percent: "#fa983a",
+    blue: "#74b9ff",
 }

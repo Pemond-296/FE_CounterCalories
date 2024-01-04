@@ -85,10 +85,11 @@ const AdminHome = () => {
 const styles = StyleSheet.create({
     header: {
         backgroundColor: Colors.background_header,
-        height: 70,
+        height: 'auto',
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 10,
+        paddingBottom: 10,
     },
     text1: {
         marginTop: 15,

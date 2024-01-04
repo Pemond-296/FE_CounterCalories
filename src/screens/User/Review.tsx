@@ -11,9 +11,12 @@ import { Colors } from "../../utils/Color";
 import Icon from "react-native-vector-icons/Ionicons"
 import { ScreenProps } from "../../utils/TypeData";
 import { createGoalAPI } from "../../services/Goal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storage } from "../../utils/Storage";
 
 const Review: React.FC<ScreenProps | any> = ({route}) => {
     const {data} = route.params
+
     const navigation = useNavigation()
 
     const [BMR, setBMR] = useState<number>(0)
@@ -80,8 +83,8 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
     },[TDEE, protein, fat])
 
     const[BMI, setBMI] = useState<number>(Number(data.bmi.toFixed(2)))
+
     const payload = {
-        user_id: 1,
         bmi: BMI, 
         tdee: TDEE,
         water: water,
@@ -90,13 +93,15 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
         carb: carb,
     }
 
+
+
     const handleNext = async () =>{
-        // try {
-        //     const response = await createGoalAPI(payload)
-        // }
-        // catch(err){
-        //     throw err
-        // }
+        const response = await createGoalAPI(data.user_data.id, payload)
+        if(response.status == '200') {
+            await AsyncStorage.setItem(storage,JSON.stringify(response.data.user))
+          //@ts-ignore
+            navigation.navigate("Screen")
+          }
     }
 
     return( 

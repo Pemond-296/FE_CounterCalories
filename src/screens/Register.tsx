@@ -51,9 +51,8 @@ const Register = () => {
 
   const handleNext = async(data: any) => {
     const response = await registerAPI(data)
-    console.log(response.data)
     //@ts-ignore
-    navigation.navigate("setInformation")
+    navigation.navigate("setInformation", {user_data: response.data.data})
   }
     return (
       <>

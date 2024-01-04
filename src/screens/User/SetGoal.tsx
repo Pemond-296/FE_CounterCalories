@@ -10,10 +10,13 @@ import { useNavigation} from '@react-navigation/native';
 import { Colors } from "../../utils/Color";
 import Icon from "react-native-vector-icons/Ionicons"
 import { ScreenProps } from "../../utils/TypeData";
+import { updateInfor } from "../../services/User";
 
 const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
     const navigation = useNavigation()
-    const {data} = route.params
+    const {data} :any = route.params
+    console.log(data)
+
     const BMI: number = data.weight / ((data.height / 100) * (data.height / 100))
     const [choose, setChoose] = useState<number>(0)
 
@@ -21,7 +24,10 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
         BMI < 25 ? (BMI > 18.5 ? setChoose(2) : setChoose(3)) : setChoose(1)
     }, [])
 
-    const handleNext = (selectedOption: number) => {
+    const handleNext = async (selectedOption: number) => { 
+        const payload = {weight: data.weight, height: data.height, age: data.age, gender:data.gender}
+        const response = await updateInfor(payload, data.user_data.id)
+        console.log(response.data)
         //@ts-ignore
         navigation.navigate("reviewIndex", {data: {...data, bmi: BMI, choose: selectedOption}})
     }

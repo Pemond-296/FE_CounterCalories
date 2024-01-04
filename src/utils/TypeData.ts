@@ -41,7 +41,6 @@ export type timeActivity = {
 }
 
 export type goal = {
-    user_id: number,
     bmi: number,
     tdee: number,
     water: number,

@@ -106,6 +106,7 @@ const AdminFood = () => {
                 kcal={item.calories}
                 img={item.image}
                 id={item.id}
+                type={"ADMIN"}
               />
             ) : (
               <Activity

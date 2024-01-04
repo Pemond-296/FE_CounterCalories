@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -13,12 +13,12 @@ import {Colors} from '../../utils/Color';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { userData } from '../../utils/Storage';
 
-const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
+const Post:React.FC<any> = ({onAction, onCloseAction, key, user}) => {
 
   const navigation = useNavigation();
 
-  const [user, setUser] = useState<any>(false);
   const [isLike, setIsLike] = useState<boolean>(false);
   const handleLike = () => {
     setIsLike(!isLike);
@@ -29,13 +29,10 @@ const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
     setFollow(!isFollow);
   };
 
-  const [isAction, setIsAction] = useState<boolean>(false);
   const handleAction = () => {
-    setIsAction(true);
     onAction()
   };
   const handlePressOut = (e: any) => {
-    setIsAction(false);
     onCloseAction()
   };
 
@@ -45,11 +42,16 @@ const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
     navigation.navigate("DetailPost")
   }
 
+  const handleUser = () => {
+    //@ts-ignore
+    navigation.navigate("DetailUser")
+  }
+
   return (
     <TouchableWithoutFeedback onPressOut={handlePressOut}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <View style={styles.name}>
+            <TouchableOpacity style={styles.name} onPress={handleUser}>
               <Image
                 style={styles.avatar}
                 source={require('../../assets/Pemond.jpg')}
@@ -58,7 +60,7 @@ const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
                 <Text style={styles.text1}>Pemond</Text>
                 <Text style={styles.text2}>Người dùng</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.follow}
@@ -102,7 +104,7 @@ const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
                 color={Colors.black}
               />
 
-              {!user ? (
+              {user && user.role !== "ADMIN" ? (
                 <Icon
                   name="dots-vertical"
                   size={35}
@@ -116,6 +118,7 @@ const Post:React.FC<any> = ({onAction, onCloseAction, key}) => {
                   size={36}
                   style={styles.icon1}
                   color={Colors.black}
+                  onPress={() => handleAction()}
                 />
               )}
             </View>

@@ -29,6 +29,7 @@ import {userData} from './src/utils/Storage';
 import Splash from './src/screens/Splash';
 import DetailUser from './src/components/User/DetailUser';
 import Follow from './src/components/User/Follow';
+import Setting from './src/screens/User/Setting';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -120,7 +121,6 @@ const AdminScreen = () => {
 };
 
 const AppChild = () => {
-<<<<<<< HEAD
   const [user, setUser] = useState<any | null>(null);
   const fetchData = async () => {
     const data: any = await userData();
@@ -132,20 +132,12 @@ const AppChild = () => {
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-=======
-  const user: any | null = useState(true);
-  user.role = 2;
-  return (
-    <NavigationContainer>
-      <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-      {user == false ? (
->>>>>>> 3da9cb0ff2083245ebef4aa905f6a67a06eb3176
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Splash" component={Splash} />
-          {user && user.role !== 'ADMIN' ? (
-            <Stack.Screen name="Screen" component={UserScreen} />
-          ) : (
+          {user && user.role === 'ADMIN' ? (
             <Stack.Screen name="Screen" component={AdminScreen} />
+          ) : (
+            <Stack.Screen name="Screen" component={UserScreen} />
           )}
           
           <Stack.Screen name="DetailPost" component={DetailPost} />
@@ -153,8 +145,7 @@ const AppChild = () => {
           <Stack.Screen name="DetailUser" component={DetailUser}/>
           
           <Stack.Screen name="Follow" component={Follow} />
-
-
+          <Stack.Screen name="Setting" component={Setting}/>
 
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />
