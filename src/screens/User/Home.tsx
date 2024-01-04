@@ -7,12 +7,16 @@ import {
   SafeAreaView,
   ScrollView,
   Animated,
+  Platform
 } from 'react-native';
 import {Colors} from '../../utils/Color';
 
 import Icon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pie from 'react-native-pie';
 import * as Progress from 'react-native-progress';
+import { FAB } from 'react-native-elements';
+import Comment from '../../components/Post/Comment';
 const UserHome = () => {
   const Col = ({numCol, children}: {numCol: any; children: any}) => {
     return <View style={styles[`${numCol}col`]}>{children}</View>;
@@ -66,6 +70,7 @@ const UserHome = () => {
         barStyle={'light-content'}
       />
       <SafeAreaView style={{flex: 1}}>
+        <View style={styles.actionButton}><Icon name='plus' size={40} style={{color: Colors.white}}></Icon></View>
         <Animated.View style={[styles.header, {height: AnimatedHeaderHeight}]}>
           <View style={styles.headerContentDate}>
             <View style={styles.day}>
@@ -194,10 +199,22 @@ const UserHome = () => {
                 <Text>Water</Text>
               </Col>
               <Col numCol={1}>
-                <Text>750/1950ml</Text>
+                <Text style={{alignSelf: "flex-end", alignContent:"flex-end"}}>750/1950ml</Text>
               </Col>
               <Col numCol={1}>
               </Col>
+            </Row>
+            <Row>
+            <View style={styles.cupsContainer}>
+              <Icon2 name='cup' style={styles.cupIconFull} size={60}></Icon2>
+              <Icon2 name='cup-water' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+              <Icon2 name='cup-outline' style={styles.cupIcon} size={60}></Icon2>
+            </View>
             </Row>
           </View>
           {dummyData.map((item, index) => (
@@ -324,7 +341,40 @@ const styles = StyleSheet.create({
   },
   waterContainer: {
     marginTop: 75,
-    width: "100%"
+    width: "100%",
+    justifyContent: "center",
+  },
+  cupsContainer: {
+    flexDirection:"row",
+    height: 100,
+    alignContent: "center",
+    borderWidth: 1,
+    borderRadius: 20
+
+  },
+  cupIconFull: {
+    color: Colors.water,
+    alignContent: "center",
+    justifyContent: "center",
+    marginHorizontal: -8,
+  },
+  cupIcon: {
+    // fontSize: 30,
+    alignContent: "center",
+    justifyContent: "center",
+    marginHorizontal: -8
+  },
+  actionButton: {
+    width: 60,  
+    height: 60,   
+    borderRadius: 30,            
+    backgroundColor: Colors.blue,                                    
+    position: 'absolute',                                          
+    bottom: 15,                                                    
+    right: 15, 
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
 

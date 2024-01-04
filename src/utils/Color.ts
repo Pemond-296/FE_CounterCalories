@@ -1,6 +1,6 @@
 export const Colors = {
     white: '#FFFFFF',
-    black: '#000000',
+    black: '#212121',
     gray: "#999999",
     button: 'darkcyan',
     title: 'darkcyan',
@@ -16,5 +16,7 @@ export const Colors = {
     green: '#009432',
     light_green: '#26de81',
     ban : "#e74c3c",
-    gray_green : "#8ae6b6"
+    gray_green : "#8ae6b6",
+    water: "#87CEEB",
+    blue: "#5DADE2"
 }
