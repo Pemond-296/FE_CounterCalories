@@ -18,7 +18,6 @@ const DetailUser = () => {
 
   const navigation = useNavigation();
   const handleBack = () => {
-    console.log('back');
     navigation.goBack();
   };
 
@@ -48,9 +47,6 @@ const DetailUser = () => {
       <View style={styles.header1}>
         <TouchableOpacity style={styles.icon1} onPress={handleBack}>
           <Icon name="arrow-back" size={25} color={Colors.white} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.icon2} onPress={handleLogout}>
-          <Icon name="log-out-outline" size={25} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.text}>Pemond</Text>
       </View>
@@ -88,7 +84,7 @@ const DetailUser = () => {
           {Array(50)
             .fill(null)
             .map((_, index) => (
-              <TouchableOpacity style={styles.touch} onPress={handlePost}>
+              <TouchableOpacity key={index} style={styles.touch} onPress={handlePost}>
                 <Image
                   source={require('../../assets/Splash.jpg')}
                   style={styles.img2}

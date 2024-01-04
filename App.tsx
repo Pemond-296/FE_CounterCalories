@@ -29,6 +29,7 @@ import {userData} from './src/utils/Storage';
 import Splash from './src/screens/Splash';
 import DetailUser from './src/components/User/DetailUser';
 import Follow from './src/components/User/Follow';
+import Setting from './src/screens/User/Setting';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -133,10 +134,10 @@ const AppChild = () => {
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="Splash" component={Splash} />
-          {user && user.role !== 'ADMIN' ? (
-            <Stack.Screen name="Screen" component={UserScreen} />
-          ) : (
+          {user && user.role === 'ADMIN' ? (
             <Stack.Screen name="Screen" component={AdminScreen} />
+          ) : (
+            <Stack.Screen name="Screen" component={UserScreen} />
           )}
           
           <Stack.Screen name="DetailPost" component={DetailPost} />
@@ -144,8 +145,7 @@ const AppChild = () => {
           <Stack.Screen name="DetailUser" component={DetailUser}/>
           
           <Stack.Screen name="Follow" component={Follow} />
-
-
+          <Stack.Screen name="Setting" component={Setting}/>
 
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Register" component={Register} />

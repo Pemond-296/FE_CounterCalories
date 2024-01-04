@@ -31,9 +31,9 @@ export const registerAPI = async (payload: userLogin) => {
     }
 }
 
-export const updateInfor = async (payload: userSignup) => {
+export const updateInfor = async (payload: userSignup, id: number) => {
     try{
-        const response = await userAPI.put('/update', payload);
+        const response = await userAPI.put('/' + id, payload);
         return response
     }
     catch(err : any){

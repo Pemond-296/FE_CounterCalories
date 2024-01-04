@@ -16,11 +16,11 @@ export const Colors = {
     green: '#009432',
     light_green: '#26de81',
     ban : "#e74c3c",
-
+    gray_green : "#8ae6b6",
     carbs: "#25CCF7",
     fat: "#ffa502",
     protein: "#ff7f50",
     kcal: "#3742fa",
-
     percent: "#fa983a",
+    blue: "#74b9ff",
 }

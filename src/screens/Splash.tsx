@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   StatusBar,
   ImageBackground,
-  View,
 } from 'react-native';
 import {Colors} from '../utils/Color';
 import {useNavigation} from '@react-navigation/native';

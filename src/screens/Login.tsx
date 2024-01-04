@@ -25,6 +25,7 @@ const Login = () => {
     const handleLogin = async () => {
         const payload = {username, password}
         const response: any = await loginAPI(payload)
+        console.log(response)
         if(response.status == '200') {
           await AsyncStorage.setItem(storage,JSON.stringify(response.data.data))
         //@ts-ignore

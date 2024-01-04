@@ -13,7 +13,6 @@ import { useNavigation } from '@react-navigation/native';
 
 const ViewUser = () => {
 
-
     const navigation = useNavigation()
 
     const [loading, setLoading] = useState<boolean>(false)
