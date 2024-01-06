@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
   },
   textarea: {
     alignItems: 'center',
+    backgroundColor: Colors.white
   },
   text3: {
     fontSize: 16,
@@ -237,13 +238,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.white
   },
   infor: {
 
   },
 
   bmi: {
-
+    backgroundColor: Colors.white
   },
 
 });

@@ -52,7 +52,7 @@ export type goal = {
 
 // Food
 
-export type creatFood = {
+export type createFood = {
     name: string,
     kcal: number,
     carbs: number,
@@ -60,7 +60,7 @@ export type creatFood = {
     protein: number,
 }
 
-export type creatActivity = {
+export type createActivity = {
     name: string,
     kcal: number,
 }

@@ -53,7 +53,7 @@ export const changePassword = async (payload: updatePassword) => {
 
 export const viewProfile = async (id: number) => {
     try{
-        const response = await userAPI.get('/view-profile/' + id);
+        const response = await userAPI.get('/profile/' + id);
         return response
     }
     catch(err : any){

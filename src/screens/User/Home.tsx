@@ -298,7 +298,7 @@ const UserHome = () => {
             <Text style={styles.text5}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
-        {!active ? (
+        {active ? (
           <View style={styles.container2}>
             <Icon1 name="light-up" size={60} color={Colors.fat} />
             <Text style={styles.text10}>Có thể bạn chưa biết? </Text>

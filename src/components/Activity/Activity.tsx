@@ -65,10 +65,11 @@ const Activity: React.FC<any> = ({
     '1 giờ': 1,
   };
 
-  const [currentTimeUnitStep, setCurrentTimeUnitStep] = useState<string>('1 phút');
+  const [currentTimeUnitStep, setCurrentTimeUnitStep] =
+    useState<string>('1 phút');
   const [currentActivityTime, setCurrentActivityTime] = useState<number>(30);
   const [currentTimeUnit, setCurrentTimeUnit] = useState<string>('phút');
-  const [currentActivityKcal, setCurrentActivityKcal] = useState<number>(kcal)
+  const [currentActivityKcal, setCurrentActivityKcal] = useState<number>(kcal);
 
   const handleChooseUnit = (text: string) => {
     setCurrentTimeUnitStep(text);
@@ -77,31 +78,38 @@ const Activity: React.FC<any> = ({
   useEffect(() => {
     if (currentTimeUnitStep !== '1 giờ') {
       setCurrentActivityTime(30);
-      setCurrentTimeUnit('phút')
+      setCurrentTimeUnit('phút');
     } else {
       setCurrentActivityTime(1);
-      setCurrentTimeUnit('giờ')
+      setCurrentTimeUnit('giờ');
     }
   }, [currentTimeUnitStep]);
 
   const calculateCurrentKcal = useCallback(() => {
     if (currentTimeUnit !== 'giờ') {
-      setCurrentActivityKcal(Number((kcal/30 * currentActivityTime).toFixed(2)))
+      setCurrentActivityKcal(
+        Number(((kcal / 30) * currentActivityTime).toFixed(2)),
+      );
     } else {
-      setCurrentActivityKcal(Number((kcal/30 * currentActivityTime * 60).toFixed(2)))
-
+      setCurrentActivityKcal(
+        Number(((kcal / 30) * currentActivityTime * 60).toFixed(2)),
+      );
     }
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
 
   useEffect(() => {
     calculateCurrentKcal();
-  }, [currentActivityTime])
+  }, [currentActivityTime]);
 
   const handleAddTime = useCallback(() => {
-    setCurrentActivityTime(currentActivityTime + activityUnits[currentTimeUnitStep]);
+    setCurrentActivityTime(
+      currentActivityTime + activityUnits[currentTimeUnitStep],
+    );
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
-  const handleSubtractTime =useCallback(() => {
-    setCurrentActivityTime(currentActivityTime - activityUnits[currentTimeUnitStep]);
+  const handleSubtractTime = useCallback(() => {
+    setCurrentActivityTime(
+      currentActivityTime - activityUnits[currentTimeUnitStep],
+    );
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
 
   return (
@@ -173,15 +181,22 @@ const Activity: React.FC<any> = ({
           console.log('Request has been close');
           setModal(false);
         }}>
+        <TouchableOpacity
+          style={{width: '100%', height: '100%'}}
+          onPress={handleClose}></TouchableOpacity>
         <View style={styles.modal}>
           <View style={styles.activityContainer}>
             <View style={styles.activityContainerHeader}>
               <View style={styles.activityTextContainer}>
                 <Text style={styles.activityName}>{name}</Text>
                 <View style={styles.activityInfo}>
-                  <Text style={styles.activityInfoText}>{currentActivityTime} {currentTimeUnit}</Text>
+                  <Text style={styles.activityInfoText}>
+                    {currentActivityTime} {currentTimeUnit}
+                  </Text>
                   <Text style={styles.activityInfoText}> - </Text>
-                  <Text style={styles.activityInfoText}>{currentActivityKcal} kcal</Text>
+                  <Text style={styles.activityInfoText}>
+                    {currentActivityKcal} kcal
+                  </Text>
                 </View>
               </View>
               <Icon
@@ -225,7 +240,7 @@ const Activity: React.FC<any> = ({
               <TouchableOpacity
                 style={styles.activityTimeAdjustButton}
                 onPress={handleSubtractTime}
-                disabled={currentActivityTime===0}>
+                disabled={currentActivityTime === 0}>
                 <Icon name="minus" size={25} color={Colors.black}></Icon>
               </TouchableOpacity>
             </View>
@@ -272,7 +287,7 @@ const styles = StyleSheet.create({
     width: 300,
     justifyContent: 'space-around',
     paddingLeft: 10,
-    flex: 1
+    flex: 1,
   },
   text1: {
     fontWeight: 'bold',
