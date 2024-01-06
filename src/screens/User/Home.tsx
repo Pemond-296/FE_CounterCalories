@@ -22,6 +22,7 @@ import Pie from 'react-native-pie';
 import * as Progress from 'react-native-progress';
 import { viewGoalAPI } from '../../services/Goal';
 import { userData } from '../../utils/Storage';
+import { updateDiary, viewDiary } from '../../services/Diary';
 
 const UserHome = () => {
   // Process Date
@@ -80,7 +81,7 @@ const UserHome = () => {
   // Process Water
   const [indexWater, setIndexWater] = useState<number>(0);
   const [water, setWater] = useState<number>(0);
-  const handleWater = (index: number) => {
+  const handleWater = async (index: number) => {
     if (index == indexWater) {
       setIndexWater(index + 1);
       setWater(250 * (index + 1));
@@ -89,6 +90,9 @@ const UserHome = () => {
       setIndexWater(indexWater - 1);
       setWater(250 * (indexWater - 1));
     }
+    const payload = {date: date, water: indexWater+1}
+    const response = await updateDiary(user.id, payload)
+    console.log(response)
   };
 
   // Process food and activities
@@ -123,7 +127,16 @@ const UserHome = () => {
   }, [user])
 
   const [daily, setDaily] = useState<any>({});
-
+  const getDaily = async () => {
+    const response = await viewDiary(user.id, date)
+    console.log(response.data)
+    setDaily(response.data)
+    setIndexWater(response?.data?.statistics?.realWater || 0)
+    setWater(Number(response?.data?.statistics?.realWater*250) || 0)
+  }
+  useEffect(() =>{
+    getDaily()
+  }, [date])
 
   return (
     <ScrollView>
@@ -155,7 +168,7 @@ const UserHome = () => {
             <Row>
               <Col numCol={2}>
                 <Row>
-                  <Text style={styles.text1}>0</Text>
+                  <Text style={styles.text1}>{daily?.statistics?.realTdee || 0}</Text>
                 </Row>
                 <Row>
                   <Text style={styles.text1}>ĐÃ NẠP</Text>
@@ -164,7 +177,7 @@ const UserHome = () => {
               <Col numCol={2}>
                 <View style={styles.center}>
                   <Row>
-                    <Text style={styles.text4}>1894</Text>
+                    <Text style={styles.text4}>{goals?.tdee - daily?.statistics?.realTdee + daily?.totalConsumes || goals?.tdee}</Text>
                   </Row>
                   <Row>
                     <Text style={styles.text2}>cần nạp</Text>
@@ -175,11 +188,11 @@ const UserHome = () => {
                   innerRadius={65}
                   sections={[
                     {
-                      percentage: 5,
+                      percentage: 100 - 100*((goals?.tdee - daily?.statistics?.realTdee + daily?.totalConsumes) / goals?.tdee ) || 0,
                       color: Colors.white,
                     },
                     {
-                      percentage: 95,
+                      percentage: 100*((goals?.tdee - daily?.statistics?.realTdee + daily?.totalConsumes) / goals?.tdee ) || 100,
                       color: Colors.gray_green,
                     },
                   ]}
@@ -189,7 +202,7 @@ const UserHome = () => {
               </Col>
               <Col numCol={2}>
                 <Row>
-                  <Text style={styles.text1}>0</Text>
+                  <Text style={styles.text1}>{daily?.totalConsumes || 0}</Text>
                 </Row>
                 <Row>
                   <Text style={styles.text1}>TIÊU HAO</Text>
@@ -203,13 +216,13 @@ const UserHome = () => {
                 </Row>
                 <Row>
                   <Progress.Bar
-                    progress={0}
+                    progress={Number(daily?.statistics?.realCarbs/goals?.carbs) || 0}
                     width={100}
-                    color={Colors.gray_green}
+                    color={Colors.white}
                   />
                 </Row>
                 <Row>
-                  <Text style={styles.text2}>0/166</Text>
+                  <Text style={styles.text2}>{daily?.statistics?.realCarbs || 0}/{goals?.carbs}</Text>
                 </Row>
               </Col>
               <Col numCol={2}>
@@ -218,13 +231,13 @@ const UserHome = () => {
                 </Row>
                 <Row>
                   <Progress.Bar
-                    progress={0}
+                    progress={Number(daily?.statistics?.realProtein/goals?.protein) || 0}
                     width={100}
-                    color={Colors.gray_green}
+                    color={Colors.white}
                   />
                 </Row>
                 <Row>
-                  <Text style={styles.text2}>0/166</Text>
+                  <Text style={styles.text2}>{daily?.statistics?.realProtein || 0}/{goals?.protein}</Text>
                 </Row>
               </Col>
               <Col numCol={2}>
@@ -233,13 +246,13 @@ const UserHome = () => {
                 </Row>
                 <Row>
                   <Progress.Bar
-                    progress={0}
+                    progress={Number(daily?.statistics?.realFat/goals?.fat) || 0}
                     width={100}
-                    color={Colors.gray_green}
+                    color={Colors.white}
                   />
                 </Row>
                 <Row>
-                  <Text style={styles.text2}>0/63</Text>
+                  <Text style={styles.text2}>{daily?.statistics?.realFat || 0}/{goals?.fat}</Text>
                 </Row>
               </Col>
             </Row>
@@ -265,7 +278,7 @@ const UserHome = () => {
         <View>
           <View style={styles.fieldwater}>
             <Text style={styles.text8}>Bạn đã uống bao nhiêu nước</Text>
-            <Text style={styles.text9}> {water}/2157ml</Text>
+            <Text style={styles.text9}> {water}/{goals?.water}ml</Text>
           </View>
 
           <View style={styles.container1}>

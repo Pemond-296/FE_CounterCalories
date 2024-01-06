@@ -22,7 +22,7 @@ export const updateDiary = async (userId: number, payload: any) => {
 
 export const viewDiary = async (userId: number, date: string) => {
     try{
-        const response = await diaryAPI.put('/'+ userId + "/detail?date="+ date)
+        const response = await diaryAPI.get('/'+ userId + "/detail?date="+ date)
         return response.data
     }
     catch(err:any){

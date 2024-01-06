@@ -59,6 +59,7 @@ const UserFood = () => {
 
   const fetchDataActivity = async () => {
     const {data} = await listActivity(user.id);
+    console.log(data);
     setActivityItem(data);
   };
 
@@ -67,7 +68,7 @@ const UserFood = () => {
   }, [user]);
 
   const createActivity = () => {
-    fetchDataActivity;
+    fetchDataActivity();
   };
 
   const [isDetail, setIsDetail] = useState<boolean>(false);
@@ -159,6 +160,7 @@ const UserFood = () => {
                 onClose={handleClose}
                 status={item.status}
                 type={"USER"}
+                userId={user.id}
               />
             ))}
 
