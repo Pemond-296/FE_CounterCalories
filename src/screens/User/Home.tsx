@@ -36,7 +36,7 @@ const UserHome = () => {
     setOpen(!open);
   };
 
-  const converDate = (date: string) => {
+  const convertDate = (date: string) => {
     return date.split('/').reverse().join('/');
   };
 
@@ -91,6 +91,14 @@ const UserHome = () => {
   // Process food and activities
   const [active, setActive] = useState<boolean>(false);
 
+  const Col = ({numCol, children}: {numCol: any; children: any}) => {
+    return <View style={styles[`${numCol}col`]}>{children}</View>;
+  };
+
+  const Row = ({children}: {children: any}) => (
+    <View style={styles.row}>{children}</View>
+  );
+
   return (
     <ScrollView>
       <StatusBar
@@ -110,85 +118,108 @@ const UserHome = () => {
               <Icon name="calendar" size={18} color={Colors.white} />
             </TouchableOpacity>
 
-            <Text style={styles.text2}> {converDate(date)}</Text>
+            <Text style={styles.text2}> {convertDate(date)}</Text>
 
             <TouchableOpacity onPress={increaseDate}>
               <Icon name="right" size={18} color={Colors.white} />
             </TouchableOpacity>
           </View>
         </View>
-
-        <View style={[styles.field0, {marginLeft: 17}]}>
-          <View style={styles.field1}>
-            <Text style={styles.text4}>0</Text>
-            <Text style={styles.text5}>đã nạp</Text>
+        <View style={styles.headerContent}>
+            <Row>
+              <Col numCol={2}>
+                <Row>
+                  <Text style={styles.text1}>0</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.text1}>ĐÃ NẠP</Text>
+                </Row>
+              </Col>
+              <Col numCol={2}>
+                <View style={styles.center}>
+                  <Row>
+                    <Text style={styles.text4}>1894</Text>
+                  </Row>
+                  <Row>
+                    <Text style={styles.text2}>cần nạp</Text>
+                  </Row>
+                </View>
+                <Pie
+                  radius={70}
+                  innerRadius={65}
+                  sections={[
+                    {
+                      percentage: 5,
+                      color: Colors.white,
+                    },
+                    {
+                      percentage: 95,
+                      color: Colors.gray_green,
+                    },
+                  ]}
+                  strokeCap={'butt'}>
+                  {' '}
+                </Pie>
+              </Col>
+              <Col numCol={2}>
+                <Row>
+                  <Text style={styles.text1}>0</Text>
+                </Row>
+                <Row>
+                  <Text style={styles.text1}>TIÊU HAO</Text>
+                </Row>
+              </Col>
+            </Row>
+            <Row>
+              <Col numCol={2}>
+                <Row>
+                  <Text style={styles.text2}>Carbs</Text>
+                </Row>
+                <Row>
+                  <Progress.Bar
+                    progress={0}
+                    width={100}
+                    color={Colors.gray_green}
+                  />
+                </Row>
+                <Row>
+                  <Text style={styles.text2}>0/166</Text>
+                </Row>
+              </Col>
+              <Col numCol={2}>
+                <Row>
+                  <Text style={styles.text2}>Protein</Text>
+                </Row>
+                <Row>
+                  <Progress.Bar
+                    progress={0}
+                    width={100}
+                    color={Colors.gray_green}
+                  />
+                </Row>
+                <Row>
+                  <Text style={styles.text2}>0/166</Text>
+                </Row>
+              </Col>
+              <Col numCol={2}>
+                <Row>
+                  <Text style={styles.text2}>Fats</Text>
+                </Row>
+                <Row>
+                  <Progress.Bar
+                    progress={0}
+                    width={100}
+                    color={Colors.gray_green}
+                  />
+                </Row>
+                <Row>
+                  <Text style={styles.text2}>0/63</Text>
+                </Row>
+              </Col>
+            </Row>
           </View>
-
-          <View style={{position: 'relative'}}>
-            <View style={styles.field2}>
-              <Text style={styles.text4}>3074</Text>
-              <Text style={styles.text5}>Cần nạp</Text>
-            </View>
-            <Pie
-              radius={70}
-              innerRadius={65}
-              sections={[
-                {
-                  percentage: 5,
-                  color: Colors.white,
-                },
-                {
-                  percentage: 95,
-                  color: Colors.gray_green,
-                },
-              ]}
-              strokeCap={'butt'}>
-              {' '}
-            </Pie>
-          </View>
-
-          <View style={styles.field1}>
-            <Text style={styles.text4}>0</Text>
-            <Text style={styles.text5}>tiêu hao</Text>
-          </View>
-        </View>
-
-        <View style={styles.field0}>
-          <View style={styles.field1}>
-            <Text style={styles.text6}>Carbs</Text>
-            <Progress.Bar
-              progress={0.9}
-              width={100}
-              color={Colors.white}
-              unfilledColor={Colors.gray_green}
-            />
-            <Text style={styles.text7}>0 / 307</Text>
-          </View>
-
-          <View style={styles.field1}>
-            <Text style={styles.text6}>Chất đạm</Text>
-            <Progress.Bar
-              progress={0.5}
-              width={100}
-              color={Colors.white}
-              unfilledColor={Colors.gray_green}
-            />
-            <Text style={styles.text7}>0 / 231</Text>
-          </View>
-
-          <View style={styles.field1}>
-            <Text style={styles.text6}>Chất béo</Text>
-            <Progress.Bar
-              progress={0.2}
-              width={100}
-              color={Colors.white}
-              unfilledColor={Colors.gray_green}
-            />
-            <Text style={styles.text7}>0 / 102</Text>
-          </View>
-        </View>
+          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, left: -208, zIndex: -1}}></View>
       </View>
-
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centerViews}>
           <View style={styles.modalView}>
@@ -269,11 +300,13 @@ const UserHome = () => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.background_header,
-    height: 'auto',
+    height: 400,
     paddingTop: 35,
     paddingBottom: 10,
+    marginBottom: 50
   },
   field: {
+    marginTop:20,
     display: 'flex',
     flexDirection: 'row',
     paddingHorizontal: 15,
@@ -282,7 +315,7 @@ const styles = StyleSheet.create({
   },
 
   text1: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: Colors.white,
   },
@@ -294,9 +327,8 @@ const styles = StyleSheet.create({
 
   text2: {
     color: Colors.white,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginRight: 20,
   },
 
   centerViews: {
@@ -345,7 +377,7 @@ const styles = StyleSheet.create({
 
   text4: {
     color: Colors.white,
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: 'bold',
   },
 
@@ -491,7 +523,37 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.black,
     fontWeight: '700',
-  }
+  },
+  headerContent: {
+    marginTop: 40,
+  },
+  row: {
+    flexDirection: 'row',
+    color: Colors.white,
+    // justifyContent: 'space-evenly'
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  '1col': {
+    flex: 3,
+    alignItems: 'center',
+  },
+  '2col': {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  '3col': {
+    flex: 1,
+    alignItems: 'center',
+  },
+  center: {
+    position: 'absolute',
+    alignSelf: 'center',
+    marginTop: 30,
+    marginLeft: 40,
+    alignItems: 'center',
+  },
 });
 
 export default UserHome;
