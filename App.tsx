@@ -131,8 +131,6 @@ const AppChild = () => {
     fetchData();
   }, []);
 
-  console.log(user);
-
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />

@@ -35,7 +35,7 @@ const Setting = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response: any = await viewProfile(user.id);
-      console.log(response);
+      console.log(response.data)
       setCurrentUserData(response);
     };
     fetchData();

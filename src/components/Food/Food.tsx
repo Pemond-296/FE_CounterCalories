@@ -5,10 +5,23 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import {SmallLoading} from '../Loading';
 import {useNavigation} from '@react-navigation/native';
-import { updateDiary } from '../../services/Diary';
+import {updateDiary} from '../../services/Diary';
 //@ts-ignore
 import {getToday} from 'react-native-modern-datepicker';
-const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fat, protein, userId}) => {
+const Food: React.FC<any> = ({
+  name,
+  unit,
+  kcal,
+  img,
+  id,
+  type,
+  status,
+  carbs,
+  fat,
+  protein,
+  userId,
+  viewType,
+}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
@@ -20,7 +33,21 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fa
 
   const handleDetailFood = () => {
     //@ts-ignore
-    navigation.navigate('DetailFood', {data: {name, unit, kcal, img, id, type, status, carbs, fat, protein, userId}});
+    navigation.navigate('DetailFood', {
+      data: {
+        name,
+        unit,
+        kcal,
+        img,
+        id,
+        type,
+        status,
+        carbs,
+        fat,
+        protein,
+        userId,
+      },
+    });
   };
 
   const handleAdd = async () => {
@@ -28,15 +55,11 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fa
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    const payload = {foodId: id , foodAmount: 100, date: getToday()}
-    console.log(payload)
-    const response = await updateDiary(userId, payload)
-    console.log(response)
+    const payload = {foodId: id, foodAmount: 100, date: getToday()};
+    const response = await updateDiary(userId, payload);
   };
 
-  const handlePublic = () => {
-    
-  };
+  const handlePublic = () => {};
 
   return (
     <TouchableOpacity style={styles.container} onPress={handleDetailFood}>
@@ -52,56 +75,79 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fa
           {unit} - {kcal}kcal
         </Text>
       </View>
-      <View style={styles.action}>
-        {type === 'ADMIN' ? (
-          <TouchableOpacity onPress={handleDelete} style={styles.delete}>
-            {!loading ? (
-              <Icon
-                name="delete"
-                size={20}
-                style={styles.icon}
-                color={Colors.black}
-              />
-            ) : (
-              <SmallLoading />
-            )}
-          </TouchableOpacity>
+      <View>
+        {viewType === 'HOME' ? (
+          <View style={styles.action}>
+            <TouchableOpacity onPress={handleDelete} style={styles.delete}>
+                {!loading ? (
+                  <Icon
+                    name="delete"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                ) : (
+                  <SmallLoading />
+                )}
+              </TouchableOpacity>
+          </View>
         ) : (
-          <View style={styles.icon1}>
-            {status === 'UNPUBLISHED' && (
-              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
-                <Icon1
-                  name="public"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
+          <View style={styles.action}>
+            {type === 'ADMIN' ? (
+              <TouchableOpacity onPress={handleDelete} style={styles.delete}>
+                {!loading ? (
+                  <Icon
+                    name="delete"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                ) : (
+                  <SmallLoading />
+                )}
               </TouchableOpacity>
-            )}
+            ) : (
+              <View style={styles.icon1}>
+                {status === 'UNPUBLISHED' && (
+                  <TouchableOpacity
+                    onPress={handlePublic}
+                    style={styles.delete}>
+                    <Icon1
+                      name="public"
+                      size={20}
+                      style={styles.icon}
+                      color={Colors.black}
+                    />
+                  </TouchableOpacity>
+                )}
 
-            {status === 'PENDING' && (
-              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
-                <Icon
-                  name="hourglass"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
-              </TouchableOpacity>
-            )}
+                {status === 'PENDING' && (
+                  <TouchableOpacity
+                    onPress={handlePublic}
+                    style={styles.delete}>
+                    <Icon
+                      name="hourglass"
+                      size={20}
+                      style={styles.icon}
+                      color={Colors.black}
+                    />
+                  </TouchableOpacity>
+                )}
 
-            <TouchableOpacity onPress={handleAdd} style={styles.delete}>
-              {!loading ? (
-                <Icon
-                  name="plus"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
-              ) : (
-                <SmallLoading />
-              )}
-            </TouchableOpacity>
+                <TouchableOpacity onPress={handleAdd} style={styles.delete}>
+                  {!loading ? (
+                    <Icon
+                      name="plus"
+                      size={20}
+                      style={styles.icon}
+                      color={Colors.black}
+                    />
+                  ) : (
+                    <SmallLoading />
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         )}
       </View>
@@ -132,7 +178,7 @@ const styles = StyleSheet.create({
     width: 250,
     justifyContent: 'space-around',
     paddingLeft: 10,
-    flex: 1
+    flex: 1,
   },
   text1: {
     fontWeight: 'bold',
@@ -166,7 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 80,
     justifyContent: 'flex-end',
-  }
+  },
 });
 
 export default Food;

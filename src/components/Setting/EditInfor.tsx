@@ -39,9 +39,7 @@ const EditInfor: React.FC<any> = ({onClose, user}) => {
   });
 
   const handleUpdateProfile = async(data: userSignup) => {
-    console.log(data);
     const response = await updateInfor(data, user.id);
-    console.log(response);
   };
 
   const {

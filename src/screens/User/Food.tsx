@@ -59,7 +59,6 @@ const UserFood = () => {
 
   const fetchDataActivity = async () => {
     const {data} = await listActivity(user.id);
-    console.log(data);
     setActivityItem(data);
   };
 
