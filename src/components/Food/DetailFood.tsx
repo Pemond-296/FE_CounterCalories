@@ -21,9 +21,11 @@ import Pie from 'react-native-pie';
 import Slider from '@react-native-community/slider';
 import EditFood from './Edit';
 
-const DetailFood = () => {
-  const navigation = useNavigation();
+const DetailFood: React.FC<any> = ({route}) => {
+  const {data}: any = route.params;
+  console.log(data);
 
+  const navigation = useNavigation();
   const handleBack = () => {
     console.log('back');
     navigation.goBack();
@@ -38,10 +40,10 @@ const DetailFood = () => {
 
   useEffect(() => {
     if (!num) {
-      setKcal(230);
-      setCarbs(77.2);
-      setFat(12.3);
-      setProtein(20.5);
+      setKcal(data.kcal);
+      setCarbs(data.carbs);
+      setFat(data.fat);
+      setProtein(data.protein);
       return;
     }
     const x = num / 100;
@@ -51,44 +53,49 @@ const DetailFood = () => {
     setProtein(Number((20.5 * x).toFixed(2)));
   }, [num]);
 
-  const [edit, setEdit] = useState<boolean>(false)
+  const [edit, setEdit] = useState<boolean>(false);
   const handleEdit = () => {
-    setEdit(true)
-  }
+    setEdit(true);
+  };
   const onClose = () => {
-    setEdit(false)
-  }
+    setEdit(false);
+  };
 
   return (
-    <View style={{position:'relative', paddingBottom: 100}}>
+    <View style={{position: 'relative', paddingBottom: 100}}>
       <StatusBar
         translucent
         backgroundColor="transparent"
         barStyle={'light-content'}
       />
-      {edit && 
+      {edit && (
         <View style={styles.edit1}>
-            <EditFood
-              onClose = {onClose}
-            />
+          <EditFood onClose={onClose} />
         </View>
-      }
+      )}
+
       <View style={styles.header1}>
         <TouchableOpacity style={styles.icon1} onPress={handleBack}>
           <Icon name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.text}>Takoyaki</Text>
+        <Text style={styles.text}>{data.name}</Text>
         <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
           <Icon1 name="edit" size={25} color={Colors.white} />
         </TouchableOpacity>
       </View>
-      <ScrollView 
+      <TouchableOpacity style={styles.addButton}>
+        <View>
+          <Text style={styles.addButtonText}>Thêm vào Nhật ký</Text>
+        </View>
+      </TouchableOpacity>
+      <ScrollView
         style={edit && styles.edit}
-        showsVerticalScrollIndicator={false}
-        >
+        showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Image
-            source={require('../../assets/takoyaki.jpg')}
+            source={{
+              uri: 'http://' + data.img,
+            }}
             style={styles.image}
           />
           <Text style={styles.text1}>Thành phần dinh dưỡng</Text>
@@ -239,7 +246,6 @@ const DetailFood = () => {
         <View style={styles.goal1}>
           <Text style={styles.text8}>Làm thế nào để tiêu hao {kcal} Kcal</Text>
           <View style={styles.how}>
-
             <View style={styles.container1}>
               <Pie
                 radius={40}
@@ -553,7 +559,7 @@ const styles = StyleSheet.create({
   },
 
   container1: {
-    width: 175, 
+    width: 175,
     alignItems: 'center',
     position: 'relative',
   },
@@ -593,7 +599,38 @@ const styles = StyleSheet.create({
     top: 150,
     left: 30,
     zIndex: 999,
-  }
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 125,
+    alignSelf: 'center',
+    backgroundColor: Colors.background_header,
+    height: 'auto',
+    width: 'auto',
+    alignItems: 'center',
+    zIndex: 999,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 25,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+        shadowColor: Colors.black,
+      },
+    }),
+
+  },
+  addButtonText: {
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: 'bold'
+  },
 });
 
 export default DetailFood;

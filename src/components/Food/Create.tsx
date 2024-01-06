@@ -30,7 +30,7 @@ const data = [
   {label : '100ml', value: '100ml'}
 ]
 
-const CreateFood: React.FC<any> = ({onClose}) => {
+const CreateFood: React.FC<any> = ({onClose, reloadFood}) => {
 
   const [user, setUser] = useState<any>({});
   useEffect(() => {
@@ -128,6 +128,7 @@ const CreateFood: React.FC<any> = ({onClose}) => {
     console.log(response.data.data)
     // Thoát form tạo
     handleExit()
+    reloadFood()
   }
 
   return (

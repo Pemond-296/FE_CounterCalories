@@ -136,7 +136,7 @@ const DetailPost: React.FC<any> = () => {
               {Array(10)
                 .fill(null)
                 .map((_, index) => (
-                  <View style={styles.detail}>
+                  <View key={index} style={styles.detail}>
                     <Text style={styles.text10}>Socola</Text>
                     <Text style={styles.text11}>2 cái (200g)</Text>
                     <DetailCalory />

@@ -44,7 +44,7 @@ const Follow: React.FC<any | ScreenProps> = ({route}) => {
       {Array(10)
             .fill(null)
             .map((_, index) => (
-             <Card/>
+             <Card key={index}/>
             ))}
       </ScrollView>
     </View>

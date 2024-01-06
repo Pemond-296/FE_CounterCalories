@@ -15,7 +15,6 @@ import { updateInfor } from "../../services/User";
 const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
     const navigation = useNavigation()
     const {data} :any = route.params
-    console.log(data)
 
     const BMI: number = data.weight / ((data.height / 100) * (data.height / 100))
     const [choose, setChoose] = useState<number>(0)
