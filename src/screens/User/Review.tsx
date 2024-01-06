@@ -90,7 +90,7 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
         water: water,
         protein: protein,
         fat: fat,
-        carb: carb,
+        carbs: carb,
     }
 
 
@@ -98,10 +98,10 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
     const handleNext = async () =>{
         const response = await createGoalAPI(data.user_data.id, payload)
         if(response.status == '200') {
-            await AsyncStorage.setItem(storage,JSON.stringify(response.data.user))
-          //@ts-ignore
-            navigation.navigate("Screen")
-          }
+        await AsyncStorage.setItem(storage, JSON.stringify(response.data.data.user))
+        //@ts-ignore
+        navigation.navigate("Screen")
+        }
     }
 
     return( 

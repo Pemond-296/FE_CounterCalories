@@ -5,8 +5,9 @@ import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {SmallLoading} from '../Loading';
+import Icon1 from 'react-native-vector-icons/MaterialIcons';
 
-const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose}) => {
+const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose, type, status}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
@@ -28,6 +29,15 @@ const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose}) => {
     setModal(false)
   }
 
+  const handleAdd = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
+  const handlePublic = () => {};
+
   const [modal, setModal] = useState<boolean>(false)
  
   return (
@@ -39,18 +49,57 @@ const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose}) => {
         </Text>
       </View>
       <View style={styles.action}>
-        <TouchableOpacity style={{width: 40}} onPress={handleDelete}>
-          {!loading ? (
-            <Icon
-              name="delete"
-              size={20}
-              style={styles.icon}
-              color={Colors.black}
-            />
-          ) : (
-            <SmallLoading />
-          )}
-        </TouchableOpacity>
+        {type === 'ADMIN' ? (
+          <TouchableOpacity onPress={handleDelete} style={styles.delete}>
+            {!loading ? (
+              <Icon
+                name="delete"
+                size={20}
+                style={styles.icon}
+                color={Colors.black}
+              />
+            ) : (
+              <SmallLoading />
+            )}
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.icon1}>
+            {status === 'UNPUBLISHED' && (
+              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
+                <Icon1
+                  name="public"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              </TouchableOpacity>
+            )}
+
+            {status === 'PENDING' && (
+              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
+                <Icon
+                  name="hourglass"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity onPress={handleAdd} style={styles.delete}>
+              {!loading ? (
+                <Icon
+                  name="plus"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              ) : (
+                <SmallLoading />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <Modal
         animationType='slide'
@@ -109,6 +158,7 @@ const styles = StyleSheet.create({
   textarea: {
     width: 300,
     justifyContent: 'space-around',
+    paddingLeft: 10,
   },
   text1: {
     fontWeight: 'bold',
@@ -177,6 +227,14 @@ const styles = StyleSheet.create({
   text4: {
     
   },
+  delete: {
+    width: 40,
+  },
+  icon1: {
+    flexDirection: 'row',
+    width: 80,
+    justifyContent: 'flex-end',
+  }
 });
 
 export default Activity;
