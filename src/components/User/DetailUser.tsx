@@ -12,31 +12,30 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../utils/Color';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {storage} from '../../utils/Storage';
+import { storage } from '../../utils/Storage';
 
-const UserPersonal = () => {
+const DetailUser = () => {
+
   const navigation = useNavigation();
-
-  const handleEdit = () => {
-    //@ts-ignore
-    navigation.navigate('Setting')
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem(storage);
     //@ts-ignore
-    navigation.navigate('Login');
-  };
+    navigation.navigate("Login")
+  }
 
   const handleFollow = (action: string) => {
     //@ts-ignore
-    navigation.navigate('Follow', {data: action});
-  };
+    navigation.navigate("Follow", {data: action})
+  }
 
   const handlePost = () => {
     //@ts-ignore
-    navigation.navigate('DetailPost');
-  };
+    navigation.navigate("DetailPost")
+  }
 
   return (
     <View style={{position: 'relative', height: 'auto'}}>
@@ -45,63 +44,37 @@ const UserPersonal = () => {
         backgroundColor="transparent"
         barStyle={'light-content'}
       />
-
       <View style={styles.header1}>
-        <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
-          <Icon name="settings-outline" size={25} color={Colors.white} />
+        <TouchableOpacity style={styles.icon1} onPress={handleBack}>
+          <Icon name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.text}>Thông tin cá nhân</Text>
+        <Text style={styles.text}>Pemond</Text>
       </View>
-      <ScrollView style={{marginBottom: 70}} showsVerticalScrollIndicator={false}>
-        <View style={styles.header3}>
-          <View style={styles.bmi}>
-            <View style={styles.field}>
-              <Text style={styles.text5}>BMI</Text>
-              <Text style={styles.text6}>24.0</Text>
-            </View>
-
-            <View style={styles.field}>
-              <Text style={styles.text5}>Lượng nước</Text>
-              <Text style={styles.text6}>2364 ml</Text>
-            </View>
-          </View>
-
-          <View style={styles.header2}>
-            <Image
-              source={require('../../assets/Pemond.jpg')}
-              style={styles.img}
-            />
-            <Text style={styles.text1}> Pemond </Text>
-            <Text style={styles.text2}>Người dùng lâu năm</Text>
-          </View>
-
-          <View style={styles.infor}>
-            <View style={styles.field}>
-              <Text style={styles.text5}>Chiều cao</Text>
-              <Text style={styles.text6}>175cm</Text>
-            </View>
-
-            <View style={styles.field}>
-              <Text style={styles.text5}>Cân nặng</Text>
-              <Text style={styles.text6}>75kg</Text>
-            </View>
-          </View>
+      <ScrollView style ={{ marginBottom: 70}}>
+        <View style={styles.header2}>
+          <Image
+            source={require('../../assets/Pemond.jpg')}
+            style={styles.img}
+          />
+          <Text style={styles.text1}> Pemond </Text>
+          <Text style={styles.text2}>Người dùng lâu năm</Text>
         </View>
-
         <View style={styles.user}>
           <View style={styles.textarea}>
             <Text style={styles.text3}>52</Text>
             <Text style={styles.text4}>Bài viết</Text>
           </View>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={styles.textarea}
-            onPress={() => handleFollow('Follower')}>
+            onPress={() => handleFollow("Follower")}
+          >
             <Text style={styles.text3}>100</Text>
             <Text style={styles.text4}>Follower</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={styles.textarea}
-            onPress={() => handleFollow('Following')}>
+            onPress={() => handleFollow("Following")}
+          >
             <Text style={styles.text3}>100</Text>
             <Text style={styles.text4}>Following</Text>
           </TouchableOpacity>
@@ -111,7 +84,7 @@ const UserPersonal = () => {
           {Array(50)
             .fill(null)
             .map((_, index) => (
-              <TouchableOpacity style={styles.touch} onPress={handlePost}>
+              <TouchableOpacity key={index} style={styles.touch} onPress={handlePost}>
                 <Image
                   source={require('../../assets/Splash.jpg')}
                   style={styles.img2}
@@ -217,35 +190,6 @@ const styles = StyleSheet.create({
     marginRight: 3,
     marginBottom: 3,
   },
-
-  text5: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.black,
-  },
-  text6: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.error,
-    marginBottom: 20,
-  },
-  field: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header3: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  infor: {
-
-  },
-
-  bmi: {
-
-  },
-
 });
 
-export default UserPersonal;
+export default DetailUser;

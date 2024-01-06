@@ -41,11 +41,26 @@ export type timeActivity = {
 }
 
 export type goal = {
-    user_id: number,
     bmi: number,
     tdee: number,
     water: number,
     carb: number,
     fat: number,
     protein: number,
+}
+
+
+// Food
+
+export type creatFood = {
+    name: string,
+    kcal: number,
+    carbs: number,
+    fat: number,
+    protein: number,
+}
+
+export type creatActivity = {
+    name: string,
+    kcal: number,
 }

@@ -23,8 +23,8 @@ import { timeActivity } from '../../utils/TypeData';
 import { ScreenProps } from "../../utils/TypeData";
 
 const SetInformation: React.FC<ScreenProps | any> = ({route}) => {
-    // const {user_data} = route.params
-    // console.log(user_data)
+    const {user_data} = route.params
+
     const navigation = useNavigation();
 
     const [isFocused, setIsFocused] = useState(0)
@@ -53,7 +53,7 @@ const SetInformation: React.FC<ScreenProps | any> = ({route}) => {
     
     const handleRegister = (data: any) =>{
         const gender = isMale ? 'Male' : 'Female'
-        data = {...data, height, weight, age, gender}
+        data = {...data, height, weight, age, gender, user_data}
         //@ts-ignore
         navigation.navigate("setGoal", {data: data})
     }   

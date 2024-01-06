@@ -11,10 +11,28 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Colors } from '../utils/Color';
+import { loginAPI } from '../services/User';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { storage} from '../utils/Storage';
 
 const Login = () => {
 
   const navigation = useNavigation();
+
+    const [username, setUsername] = React.useState<string>('')
+    const [password, setPassword] = React.useState<string>('')
+
+    const handleLogin = async () => {
+        const payload = {username, password}
+        const response: any = await loginAPI(payload)
+        console.log(response)
+        if(response.status == '200') {
+          await AsyncStorage.setItem(storage,JSON.stringify(response.data.data))
+        //@ts-ignore
+          navigation.navigate("Screen")
+        }
+    }
+
     return (
       <>
         <StatusBar translucent backgroundColor="transparent" barStyle={"dark-content"}/>
@@ -34,6 +52,9 @@ const Login = () => {
                 placeholder='Username'
                 placeholderTextColor="black"
                 style= {styles.textInput}
+                onChangeText={(value: string) => {
+                  setUsername(value)
+                }}
               />
             </View>
             <View style={styles.Field}>
@@ -48,12 +69,16 @@ const Login = () => {
                 placeholderTextColor="black"
                 secureTextEntry={true}
                 style={styles.textInput}
+                onChangeText={(value: string) => {
+                  setPassword(value)
+                }}
               />
             </View>
             <View style={styles.button}>
               <Button 
                     color={Colors.button}
                     title='Login'
+                    onPress={handleLogin}
               />
             </View>
             <Text 

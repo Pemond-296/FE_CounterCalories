@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,45 @@ import {Colors} from '../../utils/Color';
 import Food from '../../components/Food/Food';
 import Activity from '../../components/Activity/Activity';
 import Icon from 'react-native-vector-icons/EvilIcons';
-import Icon1 from 'react-native-vector-icons/Ionicons'
+import Icon1 from 'react-native-vector-icons/Ionicons';
+import CreateFood from '../../components/Food/Create';
+import CreateActivity from '../../components/Activity/Create';
+import { viewListFood } from '../../services/Food';
 
 const AdminFood = () => {
   const [active, setActive] = useState<boolean>(false);
+  const [create, setCreate] = useState<boolean>(false);
+  const handleCreate = () => {
+    setCreate(true);
+  };
+  const onClose = () => {
+    setCreate(false);
+  };
+
+  // api lấy danh sách food
+  const [foodItem, setFoodItem] = useState<any>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const {data} = await viewListFood();
+      console.log(data);
+      setFoodItem(data.data)
+    }
+    fetchData();
+  },[])
+
+  // api lấy danh sách hoạt động
+  const [activityItem, setActivityItem] = useState<any>({});
+
+  const [isDetail, setIsDetail] = useState<boolean>(false)
+  const handleDetailActivity = () => {
+    setIsDetail(true);
+  }
+  const handleClose = () => {
+    setIsDetail(false);
+  }
+
   return (
-    <>
+    <View style={[{position: 'relative', paddingBottom: 170}, , isDetail && styles.blur]}>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -29,24 +62,25 @@ const AdminFood = () => {
           {!active ? ' Quản lý thực phẩm' : 'Quản lý hoạt động'}
         </Text>
         <View style={styles.search}>
-            <View style={styles.field}>
-                <Icon name="search" color="black" size={30} style={{marginBottom: 6}}/>
-                <TextInput
-                    placeholder="Tìm kiếm ..."
-                    placeholderTextColor="black"
-                    style={styles.textInput}
-                />
-            </View>
-            <View style={styles.icon}>
-                <Icon1
-                    name='add'
-                    size={25}
-                    color={Colors.white}
-                />
-            </View>
+          <View style={styles.field}>
+            <Icon
+              name="search"
+              color="black"
+              size={30}
+              style={{marginBottom: 6}}
+            />
+            <TextInput
+              placeholder="Tìm kiếm ..."
+              placeholderTextColor="black"
+              style={styles.textInput}
+            />
+          </View>
+          <TouchableOpacity style={styles.icon} onPress={handleCreate}>
+            <Icon1 name="add" size={25} color={Colors.white} />
+          </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.choose}>
+      <View style={[styles.choose, create && styles.create]}>
         <Text
           style={[styles.text2, !active && styles.focus]}
           onPress={() => setActive(false)}>
@@ -60,17 +94,44 @@ const AdminFood = () => {
       </View>
       <ScrollView
         showsHorizontalScrollIndicator={false}
-        style={styles.component}
-        contentContainerStyle={{flexGrow: 1}}
-        >
-        {Array(10)
-          .fill(null)
-          .map((_, index) =>
-            !active ? <Food key={index} /> : <Activity key={index} />,
+        style={[styles.component, create && styles.create]}
+        contentContainerStyle={{flexGrow: 1}}>
+        {foodItem && foodItem
+          .map((item: any, index: any) =>
+            !active ? (
+              <Food
+                key={index}
+                name={item.foodName}
+                unit={item.unitType}
+                kcal={item.calories}
+                img={item.image}
+                id={item.id}
+                type={"ADMIN"}
+              />
+            ) : (
+              <Activity
+                key={index}
+                id={1}
+                name="Tập huấn bơi lội cùng Pepe"
+                unit="30 phút"
+                kcal={732}
+                onDetail ={handleDetailActivity}
+                onClose = {handleClose}
+              />
+            ),
           )}
         <View style={styles.component1} />
       </ScrollView>
-    </>
+      {create && (
+        <View style={styles.create1}>
+          {!active ? (
+            <CreateFood onClose={onClose} />
+          ) : (
+            <CreateActivity onClose={onClose}/>
+          )}
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -148,6 +209,20 @@ const styles = StyleSheet.create({
     borderColor: Colors.box_background,
     padding: 7,
     borderRadius: 50,
+    backgroundColor: Colors.box_background,
+  },
+  create: {
+    opacity: 0.3,
+  },
+  create1: {
+    position: 'absolute',
+    top: 130,
+    left: 10,
+    zIndex: 999,
+  },
+  blur: {
+    opacity: 0.4,
+    flex: 1,
     backgroundColor: Colors.box_background,
   }
 });

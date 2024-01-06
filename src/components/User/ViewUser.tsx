@@ -9,8 +9,11 @@ import { Colors } from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign'
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { SmallLoading } from '../Loading';
+import { useNavigation } from '@react-navigation/native';
 
 const ViewUser = () => {
+
+    const navigation = useNavigation()
 
     const [loading, setLoading] = useState<boolean>(false)
     const handleDelete = () => {
@@ -27,6 +30,8 @@ const ViewUser = () => {
 
     const handleDetailFood = () => {
         console.log("Detail Here")
+        // @ts-ignore
+        navigation.navigate("DetailUser")
     }
 
     
