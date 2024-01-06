@@ -40,7 +40,6 @@ const DetailPost: React.FC<any> = () => {
   };
 
   const handleBack = () => {
-    console.log('back');
     navigation.goBack();
   };
 

@@ -26,7 +26,6 @@ const SetGoal: React.FC<ScreenProps | any> = ({route}) => {
     const handleNext = async (selectedOption: number) => { 
         const payload = {weight: data.weight, height: data.height, age: data.age, gender:data.gender}
         const response = await updateInfor(payload, data.user_data.id)
-        console.log(response.data)
         //@ts-ignore
         navigation.navigate("reviewIndex", {data: {...data, bmi: BMI, choose: selectedOption}})
     }

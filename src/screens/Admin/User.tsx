@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,9 +14,29 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons'
 import ViewUser from '../../components/User/ViewUser';
 import BanUser from '../../components/User/BanUser';
+import { viewAllUser, viewBanUser } from '../../services/User';
 
 const AdminPerSon = () => {
   const [active, setActive] = useState<boolean>(false);
+
+  const [allUser, setAllUser] = useState<any>([]);
+  const fetchAllUser = async () => {
+    const response = await viewAllUser()
+    setAllUser(response.data)
+  }
+  useEffect(() => {
+    fetchAllUser()
+  }, [])
+
+  const [banUser, setBanUser] = useState<any>([]);
+  const fetchBanUser = async () => {
+    const response = await viewBanUser()
+    setAllUser(response.data)
+  }
+  useEffect(() => {
+    fetchBanUser()
+  }, [])
+
   return (
     <>
       <StatusBar

@@ -13,12 +13,19 @@ const Splash = () => {
   const navigation = useNavigation()
   const fetchData = async () => {
     const data: any = await userData();
-    if (data !== null) {
+    if (data?.role === "USER") {
       setTimeout(() => {
         //@ts-ignore
-        navigation.navigate('Screen');
+        navigation.navigate('ScreenUser');
       }, 1500);
-    } else {
+    } 
+    else if(data?.role === "ADMIN") {
+      setTimeout(() => {
+        //@ts-ignore
+        navigation.navigate('ScreenAdmin');
+      }, 1500);
+    }
+    else {
       setTimeout(() => {
         //@ts-ignore
         navigation.navigate('Login');

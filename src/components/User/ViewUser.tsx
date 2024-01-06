@@ -17,7 +17,6 @@ const ViewUser = () => {
 
     const [loading, setLoading] = useState<boolean>(false)
     const handleDelete = () => {
-        console.log("delete r cu")
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
@@ -25,11 +24,9 @@ const ViewUser = () => {
     }
 
     const handleEdit = () => {
-        console.log("edit r cu")
     }
 
     const handleDetailFood = () => {
-        console.log("Detail Here")
         // @ts-ignore
         navigation.navigate("DetailUser")
     }
@@ -37,7 +34,6 @@ const ViewUser = () => {
     
   const [loadingBan, setLoadingBan] = useState<boolean>(false);
     const handleBan = () => {
-        console.log("ban chet cmm r cu")
         setLoadingBan(true);
         setTimeout(() => {
           setLoadingBan(false);

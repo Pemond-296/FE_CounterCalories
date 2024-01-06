@@ -76,6 +76,7 @@ const UserHome = () => {
     return 'Thời gian trước';
   };
 
+  
   // Process Water
   const [indexWater, setIndexWater] = useState<number>(0);
   const [water, setWater] = useState<number>(0);
@@ -94,6 +95,7 @@ const UserHome = () => {
   const [active, setActive] = useState<boolean>(false);
 
   const Col = ({numCol, children}: {numCol: any; children: any}) => {
+    //@ts-ignore
     return <View style={styles[`${numCol}col`]}>{children}</View>;
   };
 
@@ -115,7 +117,6 @@ const UserHome = () => {
   useEffect(() =>{
     const fetchData = async () => {
       const response = await viewGoalAPI(user.id)
-      console.log(response.data.data)
       setGoal(response.data.data)
     }
     fetchData()
@@ -243,7 +244,7 @@ const UserHome = () => {
               </Col>
             </Row>
           </View>
-          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, left: -208, zIndex: -1}}></View>
+          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, alignSelf:'center', zIndex: -1}}></View>
       </View>
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centerViews}>

@@ -45,7 +45,6 @@ const UserFood = () => {
   const [foodItem, setFoodItem] = useState<any>([]);
   const fetchDataFood = async () => {
     const {data} = await viewListFood(user.id);
-    console.log(data.data);
     setFoodItem(data.data);
   };
   useEffect(() => {
@@ -59,7 +58,6 @@ const UserFood = () => {
 
   const fetchDataActivity = async () => {
     const {data} = await listActivity(user.id);
-    console.log(data);
     setActivityItem(data);
   };
 
@@ -139,12 +137,13 @@ const UserFood = () => {
                 unit={item.unitType}
                 kcal={item.calories}
                 img={item.image}
-                id={1}
+                id={item.id}
                 type={'USER'}
                 status={item.status}
                 carbs={item.carbs}
                 protein={item.protein}
                 fat={item.fat}
+                userId = {user.id}
               />
             ))
           : activityItem &&

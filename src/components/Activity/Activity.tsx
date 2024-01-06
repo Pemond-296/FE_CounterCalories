@@ -11,7 +11,6 @@ const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose, type,
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
-    console.log('delete r cu');
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -19,7 +18,6 @@ const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose, type,
   };
 
   const handleDetailActivity = () => {
-    console.log('Detail activity');
     onDetail()
     setModal(true)
   };
@@ -106,7 +104,6 @@ const Activity: React.FC<any> = ({name, kcal, unit, id, onDetail, onClose, type,
         transparent = {true}
         visible={modal}
         onRequestClose={() => {
-          console.log('Request has been close')
           setModal(false)
         }}
       >
