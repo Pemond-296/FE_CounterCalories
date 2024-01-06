@@ -58,11 +58,13 @@ const Setting = () => {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem(storage);
-    navigation.reset;
-    // @ts-ignore
-    navigation.navigate('Login');
-  };
+    await AsyncStorage.removeItem(storage)
+    navigation.reset({
+      index: 0,
+      //@ts-ignore
+      routes: [{ name: 'Splash' }],
+  });
+  }
 
   return (
     <View style={{position: 'relative', height: 'auto'}}>

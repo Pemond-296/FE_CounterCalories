@@ -16,7 +16,8 @@ import {
 } from 'react-native-image-picker';
 import {LargeLoading} from '../Loading';
 
-const EditFood: React.FC<any> = ({onClose}) => {
+const EditFood: React.FC<any> = ({onClose, data}) => {
+
   const handleExit = () => {
     onClose();
   };
@@ -28,7 +29,6 @@ const EditFood: React.FC<any> = ({onClose}) => {
     setLoading(true);
     await launchImageLibrary(options, (response: any) => {
       if (!response.didCancel && !response.error) {
-        console.log(response);
         setSelectedImage(response.assets[0].uri);
       }
       setLoading(false)
@@ -37,8 +37,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
 
   const handleImg = () => {
     pickImage();
-  };
-
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Cập nhật thực phẩm</Text>
@@ -52,7 +51,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
       <View style={styles.view}>
         <View style={styles.field}>
           <Text style={styles.text1}>Tên thực phẩm</Text>
-          <TextInput style={styles.input} value="Takoyaki" />
+          <TextInput style={styles.input} value={data.name} />
         </View>
         <View>
           <Text style={styles.text1}>
@@ -62,7 +61,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
             <View style={styles.field1}>
               <TextInput
                 style={styles.input4}
-                value="230"
+                value={String(data.kcal)}
                 keyboardType="numeric"
               />
               <Text style={styles.text2}>Kcal</Text>
@@ -71,7 +70,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
               <View style={styles.field1}>
                 <TextInput
                   style={styles.input1}
-                  value="77.3"
+                  value={String(data.carbs)}
                   keyboardType="numeric"
                 />
                 <Text style={styles.text2}>Carbs (g)</Text>
@@ -79,7 +78,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
               <View style={styles.field1}>
                 <TextInput
                   style={styles.input2}
-                  value="77.3"
+                  value={String(data.fat)}
                   keyboardType="numeric"
                 />
                 <Text style={styles.text2}>Chất béo (g)</Text>
@@ -87,8 +86,9 @@ const EditFood: React.FC<any> = ({onClose}) => {
               <View style={styles.field1}>
                 <TextInput
                   style={styles.input3}
-                  value="77.3"
+                  value={String(data.protein)}
                   keyboardType="numeric"
+                  
                 />
                 <Text style={styles.text2}>Chất đạm (g)</Text>
               </View>
@@ -101,7 +101,7 @@ const EditFood: React.FC<any> = ({onClose}) => {
             <Image
               source={
                 !selectedImage
-                  ? require('../../assets/takoyaki.jpg')
+                  ? {uri: "http://" + data.img}
                   : {uri: selectedImage}
               }
               style={styles.image}

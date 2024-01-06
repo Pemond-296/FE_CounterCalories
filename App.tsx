@@ -122,40 +122,42 @@ const AdminScreen = () => {
 };
 
 const AppChild = () => {
-  const [user, setUser] = useState<any | null>(null);
-  const fetchData = async () => {
-    const data: any = await userData();
-    return data;
-  }
+  const [user, setUser] = useState<any>(null);
   useEffect(() => {
-    const data = fetchData();
-    setUser(data);
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
   }, []);
+
+  console.log(user);
+
   return (
     <NavigationContainer>
       <StatusBar backgroundColor={Colors.white} barStyle={'light-content'} />
-        <Stack.Navigator screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Splash" component={Splash} />
-          {user && user.role === 'ADMIN' ? (
-            <Stack.Screen name="Screen" component={AdminScreen} />
-          ) : (
-            <Stack.Screen name="Screen" component={UserScreen} />
-          )}
-          
-          <Stack.Screen name="DetailPost" component={DetailPost} />
-          <Stack.Screen name="DetailFood" component={DetailFood} />
-          <Stack.Screen name="DetailUser" component={DetailUser}/>
-          
-          <Stack.Screen name="Follow" component={Follow} />
-          <Stack.Screen name="Setting" component={Setting}/>
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName="Splash">
+        <Stack.Screen name="Splash" component={Splash} />
 
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Register" component={Register} />
-          <Stack.Screen name="setInformation" component={SetInformation} />
-          <Stack.Screen name="setGoal" component={SetGoal} />
-          <Stack.Screen name="reviewIndex" component={Review} />
+        <Stack.Screen name="ScreenAdmin" component={AdminScreen} />
 
-        </Stack.Navigator>
+        <Stack.Screen name="ScreenUser" component={UserScreen} />
+
+        <Stack.Screen name="DetailPost" component={DetailPost} />
+        <Stack.Screen name="DetailFood" component={DetailFood} />
+        <Stack.Screen name="DetailUser" component={DetailUser} />
+
+        <Stack.Screen name="Follow" component={Follow} />
+        <Stack.Screen name="Setting" component={Setting} />
+
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="setInformation" component={SetInformation} />
+        <Stack.Screen name="setGoal" component={SetGoal} />
+        <Stack.Screen name="reviewIndex" component={Review} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

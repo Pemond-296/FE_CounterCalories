@@ -7,12 +7,15 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+//@ts-ignore
+import {getToday} from 'react-native-modern-datepicker';
 
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {SmallLoading} from '../Loading';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
+import { updateDiary } from '../../services/Diary';
 
 const Activity: React.FC<any> = ({
   name,
@@ -23,6 +26,7 @@ const Activity: React.FC<any> = ({
   onClose,
   type,
   status,
+  userId
 }) => {
   const [modal, setModal] = useState<boolean>(false);
   const navigation = useNavigation();
@@ -35,8 +39,8 @@ const Activity: React.FC<any> = ({
   };
 
   const handleDetailActivity = () => {
-    onDetail();
-    setModal(true);
+    onDetail()
+    setModal(true)
   };
 
   const handleClose = () => {
@@ -44,11 +48,13 @@ const Activity: React.FC<any> = ({
     setModal(false);
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+    const payload = {activityId: id , activitiUnit: 30, date: getToday()}
+    const response = await updateDiary(userId, payload)
   };
 
   const handlePublic = () => {};

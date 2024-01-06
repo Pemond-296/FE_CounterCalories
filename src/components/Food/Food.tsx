@@ -5,12 +5,13 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import {SmallLoading} from '../Loading';
 import {useNavigation} from '@react-navigation/native';
-
-const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fat, protein}) => {
+import { updateDiary } from '../../services/Diary';
+//@ts-ignore
+import {getToday} from 'react-native-modern-datepicker';
+const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fat, protein, userId}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
-    console.log('delete r cu');
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -18,19 +19,24 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fa
   };
 
   const handleDetailFood = () => {
-    console.log('Detail Here');
     //@ts-ignore
-    navigation.navigate('DetailFood', {data: {name, unit, kcal, img, id, type, status, carbs, fat, protein}});
+    navigation.navigate('DetailFood', {data: {name, unit, kcal, img, id, type, status, carbs, fat, protein, userId}});
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+    const payload = {foodId: id , foodAmount: 100, date: getToday()}
+    console.log(payload)
+    const response = await updateDiary(userId, payload)
+    console.log(response)
   };
 
-  const handlePublic = () => {};
+  const handlePublic = () => {
+    
+  };
 
   return (
     <TouchableOpacity style={styles.container} onPress={handleDetailFood}>

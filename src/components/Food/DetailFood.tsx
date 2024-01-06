@@ -20,21 +20,30 @@ import Pie from 'react-native-pie';
 
 import Slider from '@react-native-community/slider';
 import EditFood from './Edit';
+import { viewGoalAPI } from '../../services/Goal';
 
 const DetailFood: React.FC<any> = ({route}) => {
+  
   const {data}: any = route.params;
-  console.log(data);
+
+  const [goals, setGoal] = useState<any>({});
+  useEffect(() =>{
+    const fetchData = async () => {
+      const response = await viewGoalAPI(data.userId)
+      setGoal(response.data.data)
+    }
+    fetchData()
+  }, [])
 
   const navigation = useNavigation();
   const handleBack = () => {
-    console.log('back');
     navigation.goBack();
   };
 
-  const [kcal, setKcal] = useState<number>(230);
-  const [carbs, setCarbs] = useState<number>(77.2);
-  const [fat, setFat] = useState<number>(12.3);
-  const [protein, setProtein] = useState<number>(20.5);
+  const [kcal, setKcal] = useState<number>(1);
+  const [carbs, setCarbs] = useState<number>(1);
+  const [fat, setFat] = useState<number>(1);
+  const [protein, setProtein] = useState<number>(1);
 
   const [num, setNum] = useState<number>(0);
 
@@ -44,13 +53,14 @@ const DetailFood: React.FC<any> = ({route}) => {
       setCarbs(data.carbs);
       setFat(data.fat);
       setProtein(data.protein);
-      return;
     }
-    const x = num / 100;
-    setKcal(Number((230 * x).toFixed(1)));
-    setCarbs(Number((77.2 * x).toFixed(2)));
-    setFat(Number((12.3 * x).toFixed(2)));
-    setProtein(Number((20.5 * x).toFixed(2)));
+    else{
+      const x = num / 100;
+      setKcal(Number((data.kcal * x).toFixed(1)));
+      setCarbs(Number((data.carbs * x).toFixed(2)));
+      setFat(Number((data.fat * x).toFixed(2)));
+      setProtein(Number((data.protein * x).toFixed(2)));
+    }
   }, [num]);
 
   const [edit, setEdit] = useState<boolean>(false);
@@ -70,18 +80,20 @@ const DetailFood: React.FC<any> = ({route}) => {
       />
       {edit && (
         <View style={styles.edit1}>
-          <EditFood onClose={onClose} />
+          <EditFood onClose={onClose} data={data} />
         </View>
       )}
-
       <View style={styles.header1}>
         <TouchableOpacity style={styles.icon1} onPress={handleBack}>
           <Icon name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.text}>{data.name}</Text>
-        <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
-          <Icon1 name="edit" size={25} color={Colors.white} />
-        </TouchableOpacity>
+        {(data.type === 'ADMIN' || (data.status === "UNPUBLISHED"))
+        && (
+          <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
+            <Icon1 name="edit" size={25} color={Colors.white} />
+          </TouchableOpacity>
+        )}
       </View>
       <TouchableOpacity style={styles.addButton}>
         <View>
@@ -117,24 +129,24 @@ const DetailFood: React.FC<any> = ({route}) => {
             sections={[
               //fat
               {
-                percentage: 10,
+                percentage: (fat/(fat+protein+carbs))*100,
                 color: Colors.fat,
               },
 
               //protein
               {
-                percentage: 20,
+                percentage: (protein/(fat+protein+carbs))*100,
                 color: Colors.protein,
               },
               //carbs
               {
-                percentage: 70,
+                percentage: (carbs/(fat+protein+carbs))*100,
                 color: Colors.carbs,
               },
             ]}
             strokeCap={'butt'}
           />
-          <Text style={styles.text6}>{kcal}</Text>
+          <View style={styles.viewtext}><Text style={styles.text6}>{kcal}</Text></View>
           <Text style={styles.text7}>Kcal</Text>
           <View>
             <View style={styles.field1}>
@@ -189,10 +201,10 @@ const DetailFood: React.FC<any> = ({route}) => {
                   maximumTrackTintColor={Colors.kcal}
                   thumbTintColor="transparent"
                   style={{width: 150}}
-                  value={50}
+                  value={Number(100*kcal/goals.tdee)}
                 />
                 <Text style={styles.text9}>
-                  {Number((kcal / 23).toFixed(0))}% Kcal
+                  {Number((100* kcal / goals.tdee).toFixed(2))}% Kcal
                 </Text>
               </View>
               <View style={styles.unit}>
@@ -203,10 +215,10 @@ const DetailFood: React.FC<any> = ({route}) => {
                   maximumTrackTintColor={Colors.protein}
                   thumbTintColor="transparent"
                   style={{width: 150}}
-                  value={protein}
+                  value={Number(100*protein/goals.protein)}
                 />
                 <Text style={styles.text9}>
-                  {Number((protein / 23).toFixed(0))}% Chất đạm
+                  {Number((100*protein/goals.protein).toFixed(2))}% Chất đạm
                 </Text>
               </View>
             </View>
@@ -219,10 +231,10 @@ const DetailFood: React.FC<any> = ({route}) => {
                   maximumTrackTintColor={Colors.carbs}
                   thumbTintColor="transparent"
                   style={{width: 150}}
-                  value={carbs}
+                  value={Number(100*carbs/goals.carbs)}
                 />
                 <Text style={styles.text9}>
-                  {Number((carbs / 23).toFixed(0))}% Carbs
+                  {Number((100*carbs/goals.carbs).toFixed(2))}% Carbs
                 </Text>
               </View>
               <View style={styles.unit}>
@@ -233,10 +245,10 @@ const DetailFood: React.FC<any> = ({route}) => {
                   maximumTrackTintColor={Colors.fat}
                   thumbTintColor="transparent"
                   style={{width: 150}}
-                  value={fat}
+                  value={Number(100*fat/goals.fat)}
                 />
                 <Text style={styles.text9}>
-                  {Number((fat / 23).toFixed(0))}% Chất béo
+                  {Number((100*fat/goals.fat).toFixed(0))}% Chất béo
                 </Text>
               </View>
             </View>
@@ -466,14 +478,20 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   text6: {
-    position: 'absolute',
-    zIndex: 999,
-    left: 107,
-    top: 75,
     fontSize: 16,
     color: Colors.error,
     fontWeight: 'bold',
+    textAlign:"center"
   },
+  viewtext: {
+    position: 'absolute',
+    zIndex: 999,
+    width: 100,
+    bottom: 100,
+    left: 70,
+    alignSelf: 'center',
+  },
+
   text7: {
     position: 'absolute',
     zIndex: 999,

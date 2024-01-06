@@ -37,7 +37,6 @@ const Post:React.FC<any> = ({onAction, onCloseAction, user}) => {
   };
 
   const handleDetail = () => {
-    console.log("Detail r ne")
     //@ts-ignore
     navigation.navigate("DetailPost")
   }
@@ -104,7 +103,7 @@ const Post:React.FC<any> = ({onAction, onCloseAction, user}) => {
                 color={Colors.black}
               />
 
-              {user && user.role !== "ADMIN" ? (
+              {user && user.role === "ADMIN" ? (
                 <Icon
                   name="dots-vertical"
                   size={35}

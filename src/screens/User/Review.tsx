@@ -100,7 +100,7 @@ const Review: React.FC<ScreenProps | any> = ({route}) => {
         if(response.status == '200') {
         await AsyncStorage.setItem(storage, JSON.stringify(response.data.data.user))
         //@ts-ignore
-        navigation.navigate("Screen")
+        navigation.navigate("ScreenUser")
         }
     }
 
