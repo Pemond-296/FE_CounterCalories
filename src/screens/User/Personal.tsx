@@ -111,7 +111,7 @@ const UserPersonal = () => {
           {Array(50)
             .fill(null)
             .map((_, index) => (
-              <TouchableOpacity style={styles.touch} onPress={handlePost}>
+              <TouchableOpacity key={index} style={styles.touch} onPress={handlePost}>
                 <Image
                   source={require('../../assets/Splash.jpg')}
                   style={styles.img2}

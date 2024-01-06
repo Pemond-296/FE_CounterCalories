@@ -243,7 +243,7 @@ const UserHome = () => {
               </Col>
             </Row>
           </View>
-          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, left: -208, zIndex: -1}}></View>
+          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, zIndex: -1, alignSelf: "center"}}></View>
       </View>
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centerViews}>
@@ -272,6 +272,7 @@ const UserHome = () => {
               .fill(null)
               .map((_, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.watericon}
                   onPress={() => handleWater(index)}>
                   <Icon1
@@ -340,7 +341,7 @@ const styles = StyleSheet.create({
   },
 
   text1: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: Colors.white,
   },
@@ -472,8 +473,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 16,
     height: 'auto',
-    padding: 20,
-    width: 370,
+    padding: 15,
+    width: 'auto',
     shadowColor: Colors.gender,
     shadowOffset: {
       width: 0,
@@ -504,8 +505,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 16,
     height: 'auto',
-    padding: 20,
-    width: 370,
+    padding: 15,
+    width: 'auto',
     shadowColor: Colors.gender,
     shadowOffset: {
       width: 0,

@@ -20,6 +20,7 @@ import CreateActivity from '../../components/Activity/Create';
 import {viewListFood} from '../../services/Food';
 import {listActivity} from '../../services/Activity';
 import {userData} from '../../utils/Storage';
+import { colors } from 'react-native-elements';
 
 const UserFood = () => {
   const [active, setActive] = useState<boolean>(false);
@@ -184,7 +185,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingTop: 20,
-    marginBottom: 10,
   },
   text1: {
     color: Colors.white,
@@ -193,14 +193,15 @@ const styles = StyleSheet.create({
   },
   choose: {
     padding: 10,
-    paddingTop: 0,
+    paddingBottom: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    backgroundColor: Colors.white
   },
   text2: {
     color: Colors.black,
-    fontSize: 16,
+    fontSize: 18,
     opacity: 0.4,
     borderBottomWidth: 1,
     borderColor: Colors.white,
@@ -212,7 +213,7 @@ const styles = StyleSheet.create({
     opacity: 1,
     fontWeight: 'bold',
     borderBottomWidth: 2,
-    borderColor: Colors.gender,
+    borderColor: Colors.background_header,
   },
   component: {
     padding: 10,

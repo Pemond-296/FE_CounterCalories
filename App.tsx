@@ -69,6 +69,7 @@ const UserScreen = () => {
           height: 50,
         },
         headerShown: false,
+        tabBarHideOnKeyboard: true
       })}>
       <Tab.Screen name="Home" component={UserHome} />
       <Tab.Screen name="Food" component={UserFood} />
@@ -124,10 +125,11 @@ const AppChild = () => {
   const [user, setUser] = useState<any | null>(null);
   const fetchData = async () => {
     const data: any = await userData();
-    setUser(data);
+    return data;
   }
   useEffect(() => {
-    fetchData();
+    const data = fetchData();
+    setUser(data);
   }, []);
   return (
     <NavigationContainer>

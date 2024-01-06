@@ -22,7 +22,7 @@ const Comment = () => {
       {Array(3)
         .fill(null)
         .map((_, index) => (
-          <View style={styles.comment}>
+          <View key={index} style={styles.comment}>
             <View style={styles.header}>
               <Image
                 source={require('../../assets/Pemond.jpg')}
