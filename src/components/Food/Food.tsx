@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     borderRadius: 16,
     flexDirection: 'row',
-    width: 'auto',
+    width: '100%',
     marginBottom: 10,
   },
   img: {
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     width: 250,
     justifyContent: 'space-around',
     paddingLeft: 10,
+    flex: 1
   },
   text1: {
     fontWeight: 'bold',

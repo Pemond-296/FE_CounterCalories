@@ -15,7 +15,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { userData } from '../../utils/Storage';
 
-const Post:React.FC<any> = ({onAction, onCloseAction, key, user}) => {
+const Post:React.FC<any> = ({onAction, onCloseAction, user}) => {
 
   const navigation = useNavigation();
 

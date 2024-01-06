@@ -2,6 +2,7 @@ export const Colors = {
     white: '#FFFFFF',
     black: '#212121',
     gray: "#999999",
+    light_gray: "#F1F1ED",
     button: 'darkcyan',
     title: 'darkcyan',
     link: 'blue',

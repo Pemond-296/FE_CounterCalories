@@ -273,6 +273,7 @@ const UserHome = () => {
               .fill(null)
               .map((_, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={styles.watericon}
                   onPress={() => handleWater(index)}>
                   <Icon1
@@ -341,7 +342,7 @@ const styles = StyleSheet.create({
   },
 
   text1: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: Colors.white,
   },
@@ -473,8 +474,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 16,
     height: 'auto',
-    padding: 20,
-    width: 370,
+    padding: 15,
+    width: 'auto',
     shadowColor: Colors.gender,
     shadowOffset: {
       width: 0,
@@ -505,8 +506,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 16,
     height: 'auto',
-    padding: 20,
-    width: 370,
+    padding: 15,
+    width: 'auto',
     shadowColor: Colors.gender,
     shadowOffset: {
       width: 0,

@@ -95,6 +95,11 @@ const DetailFood: React.FC<any> = ({route}) => {
           </TouchableOpacity>
         )}
       </View>
+      <TouchableOpacity style={styles.addButton}>
+        <View>
+          <Text style={styles.addButtonText}>Thêm vào Nhật ký</Text>
+        </View>
+      </TouchableOpacity>
       <ScrollView
         style={edit && styles.edit}
         showsVerticalScrollIndicator={false}>
@@ -612,6 +617,37 @@ const styles = StyleSheet.create({
     top: 150,
     left: 30,
     zIndex: 999,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 125,
+    alignSelf: 'center',
+    backgroundColor: Colors.background_header,
+    height: 'auto',
+    width: 'auto',
+    alignItems: 'center',
+    zIndex: 999,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 25,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+        shadowColor: Colors.black,
+      },
+    }),
+
+  },
+  addButtonText: {
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: 'bold'
   },
 });
 

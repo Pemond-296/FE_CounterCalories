@@ -69,6 +69,7 @@ const UserScreen = () => {
           height: 50,
         },
         headerShown: false,
+        tabBarHideOnKeyboard: true
       })}>
       <Tab.Screen name="Home" component={UserHome} />
       <Tab.Screen name="Food" component={UserFood} />
