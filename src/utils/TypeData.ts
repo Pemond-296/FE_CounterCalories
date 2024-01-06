@@ -44,7 +44,7 @@ export type goal = {
     bmi: number,
     tdee: number,
     water: number,
-    carb: number,
+    carbs: number,
     fat: number,
     protein: number,
 }

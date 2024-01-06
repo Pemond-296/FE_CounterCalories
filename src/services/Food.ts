@@ -19,9 +19,9 @@ export const createFood = async(payload: any) => {
     }
 }
 
-export const viewListFood = async() => {
+export const viewListFood = async(userId: number) => {
     try{
-        const response = await foodAPI.get('')
+        const response = await foodAPI.get('/'+ userId)
         return response
     }catch(err : any){
         return err.response

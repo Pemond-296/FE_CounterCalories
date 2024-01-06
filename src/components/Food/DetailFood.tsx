@@ -21,9 +21,11 @@ import Pie from 'react-native-pie';
 import Slider from '@react-native-community/slider';
 import EditFood from './Edit';
 
-const DetailFood = () => {
-  const navigation = useNavigation();
+const DetailFood: React.FC <any> = ({route}) => {
+  const {data} :any = route.params
+  console.log(data)
 
+  const navigation = useNavigation();
   const handleBack = () => {
     console.log('back');
     navigation.goBack();
@@ -38,10 +40,10 @@ const DetailFood = () => {
 
   useEffect(() => {
     if (!num) {
-      setKcal(230);
-      setCarbs(77.2);
-      setFat(12.3);
-      setProtein(20.5);
+      setKcal(data.kcal);
+      setCarbs(data.carbs);
+      setFat(data.fat);
+      setProtein(data.protein);
       return;
     }
     const x = num / 100;
@@ -77,7 +79,7 @@ const DetailFood = () => {
         <TouchableOpacity style={styles.icon1} onPress={handleBack}>
           <Icon name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.text}>Takoyaki</Text>
+        <Text style={styles.text}>{data.name}</Text>
         <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
           <Icon1 name="edit" size={25} color={Colors.white} />
         </TouchableOpacity>
@@ -88,7 +90,9 @@ const DetailFood = () => {
         >
         <View style={styles.container}>
           <Image
-            source={require('../../assets/takoyaki.jpg')}
+           source={{
+            uri: 'http://' + data.img,
+          }}
             style={styles.image}
           />
           <Text style={styles.text1}>Thành phần dinh dưỡng</Text>

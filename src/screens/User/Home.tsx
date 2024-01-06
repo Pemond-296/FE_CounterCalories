@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -20,6 +20,8 @@ import moment from 'moment';
 //@ts-ignore
 import Pie from 'react-native-pie';
 import * as Progress from 'react-native-progress';
+import { viewGoalAPI } from '../../services/Goal';
+import { userData } from '../../utils/Storage';
 
 const UserHome = () => {
   // Process Date
@@ -91,6 +93,30 @@ const UserHome = () => {
   // Process food and activities
   const [active, setActive] = useState<boolean>(false);
 
+
+  const [user, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  },[]);
+
+  // get data
+  const [goals, setGoal] = useState<any>({});
+  useEffect(() =>{
+    const fetchData = async () => {
+      const response = await viewGoalAPI(user.id)
+      console.log(response.data.data)
+      setGoal(response.data.data)
+    }
+    fetchData()
+  }, [user])
+
+  const [daily, setDaily] = useState<any>({});
+
+
   return (
     <ScrollView>
       <StatusBar
@@ -126,7 +152,7 @@ const UserHome = () => {
 
           <View style={{position: 'relative'}}>
             <View style={styles.field2}>
-              <Text style={styles.text4}>3074</Text>
+              <Text style={styles.text4}>{goals?.tdee}</Text>
               <Text style={styles.text5}>Cần nạp</Text>
             </View>
             <Pie
@@ -162,7 +188,7 @@ const UserHome = () => {
               color={Colors.white}
               unfilledColor={Colors.gray_green}
             />
-            <Text style={styles.text7}>0 / 307</Text>
+            <Text style={styles.text7}>0 / {goals?.carbs}</Text>
           </View>
 
           <View style={styles.field1}>
@@ -173,7 +199,7 @@ const UserHome = () => {
               color={Colors.white}
               unfilledColor={Colors.gray_green}
             />
-            <Text style={styles.text7}>0 / 231</Text>
+            <Text style={styles.text7}>0 / {goals?.protein}</Text>
           </View>
 
           <View style={styles.field1}>
@@ -184,7 +210,7 @@ const UserHome = () => {
               color={Colors.white}
               unfilledColor={Colors.gray_green}
             />
-            <Text style={styles.text7}>0 / 102</Text>
+            <Text style={styles.text7}>0 / {goals?.fat}</Text>
           </View>
         </View>
       </View>
@@ -241,7 +267,7 @@ const UserHome = () => {
             <Text style={styles.text5}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
-        {active ? (
+        {!active ? (
           <View style={styles.container2}>
             <Icon1 name="light-up" size={60} color={Colors.fat} />
             <Text style={styles.text10}>Có thể bạn chưa biết? </Text>

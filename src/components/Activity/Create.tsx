@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -15,13 +15,15 @@ import {z, ZodType} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useForm} from 'react-hook-form';
 import {creatActivity} from '../../utils/TypeData';
+import { createActivity } from '../../services/Activity';
+import { userData } from '../../utils/Storage';
 
 const data = [
   {label: '30 phút', value: '30 phút'},
   {label: '50 cái', value: '50 cái'},
 ];
 
-const CreateActivity: React.FC<any> = ({onClose}) => {
+const CreateActivity: React.FC<any> = ({onClose, reloadActivity}) => {
   const schema: ZodType<creatActivity> = z.object({
     name: z.string(),
     kcal: z.number(),
@@ -42,11 +44,23 @@ const CreateActivity: React.FC<any> = ({onClose}) => {
   const [value, setValue1] = useState<any>('30 Phút');
   const [isFocus, setIsFocus] = useState<boolean>(false);
 
-  const handleCreate = (data: any) => {
-    const payload = {...data, unit: value}
-    console.log(payload);
+  const [user, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  },[]);
 
+
+  const handleCreate = async (data: any) => {
+    const payload = {caloriesConsume: data.kcal, unit: value, name: data.name};
+    console.log(payload);
+    const response = await createActivity(user.id, payload);
+    console.log(response.data);
     handleExit()
+    reloadActivity();
   };
 
   return (
@@ -114,7 +128,7 @@ const CreateActivity: React.FC<any> = ({onClose}) => {
       </View>
       <TouchableOpacity style={styles.update} onPress={handleSubmit(handleCreate)}>
         <Text style={{color: Colors.white, fontWeight: 'bold', fontSize: 18}}>
-          Cập nhật 
+          Tạo mới
         </Text>
       </TouchableOpacity>
     </View>

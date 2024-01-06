@@ -19,6 +19,7 @@ import CreateActivity from '../../components/Activity/Create';
 
 import {viewListFood} from '../../services/Food';
 import {listActivity} from '../../services/Activity';
+import {userData} from '../../utils/Storage';
 
 const UserFood = () => {
   const [active, setActive] = useState<boolean>(false);
@@ -30,29 +31,45 @@ const UserFood = () => {
     setCreate(false);
   };
 
+  const [user, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  }, []);
+
+
   // api lấy danh sách food
   const [foodItem, setFoodItem] = useState<any>([]);
   const fetchDataFood = async () => {
-    const {data} = await viewListFood();
+    const {data} = await viewListFood(user.id);
     console.log(data.data);
     setFoodItem(data.data);
   };
   useEffect(() => {
     fetchDataFood();
-  }, []);
-
+  }, [user]);
+  const createFood = () => {
+    fetchDataFood();
+  };
   // api lấy danh sách hoạt động
-  const [activityItem, setActivityItem] = useState<any>([])
+  const [activityItem, setActivityItem] = useState<any>([]);
 
   const fetchDataActivity = async () => {
-    const {data} = await listActivity();
+    const {data} = await listActivity(user.id);
     console.log(data);
-    setActivityItem(data.data);
-  }
+    setActivityItem(data);
+  };
 
   useEffect(() => {
     fetchDataActivity();
-  }, []);
+  }, [user]);
+
+  const createActivity = () => {
+    fetchDataActivity;
+  };
 
   const [isDetail, setIsDetail] = useState<boolean>(false);
   const handleDetailActivity = () => {
@@ -119,11 +136,15 @@ const UserFood = () => {
               <Food
                 key={index}
                 name={item.foodName}
-                unit={item.unit}
-                kcal={230}
-                img={item.img}
+                unit={item.unitType}
+                kcal={item.calories}
+                img={item.image}
                 id={1}
                 type={'USER'}
+                status={item.status}
+                carbs={item.carbs}
+                protein={item.protein}
+                fat={item.fat}
               />
             ))
           : activityItem &&
@@ -132,10 +153,12 @@ const UserFood = () => {
                 key={index}
                 id={item.id}
                 name={item.name}
-                unit={item.unit}
-                kcal={item.kcal}
+                unit={"30 phút"}
+                kcal={item.caloriesConsume}
                 onDetail={handleDetailActivity}
                 onClose={handleClose}
+                status={item.status}
+                type={"USER"}
               />
             ))}
 
@@ -144,9 +167,9 @@ const UserFood = () => {
       {create && (
         <View style={styles.create1}>
           {!active ? (
-            <CreateFood onClose={onClose} />
+            <CreateFood onClose={onClose} reloadFood={createFood} />
           ) : (
-            <CreateActivity onClose={onClose} />
+            <CreateActivity onClose={onClose} reloadActivity={createActivity} />
           )}
         </View>
       )}

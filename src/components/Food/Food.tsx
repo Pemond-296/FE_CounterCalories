@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import {SmallLoading} from '../Loading';
 import {useNavigation} from '@react-navigation/native';
 
-const Food: React.FC<any> = ({name, unit, kcal, img, id, type}) => {
+const Food: React.FC<any> = ({name, unit, kcal, img, id, type, status, carbs, fat, protein}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
@@ -19,7 +20,7 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type}) => {
   const handleDetailFood = () => {
     console.log('Detail Here');
     //@ts-ignore
-    navigation.navigate('DetailFood');
+    navigation.navigate('DetailFood', {data: {name, unit, kcal, img, id, type, status, carbs, fat, protein}});
   };
 
   const handleAdd = () => {
@@ -27,11 +28,18 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type}) => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-  }
+  };
+
+  const handlePublic = () => {};
 
   return (
     <TouchableOpacity style={styles.container} onPress={handleDetailFood}>
-      <Image source={img} style={styles.img} />
+      <Image
+        source={{
+          uri: 'http://' + img,
+        }}
+        style={styles.img}
+      />
       <View style={styles.textarea}>
         <Text style={styles.text1}>{name}</Text>
         <Text style={styles.text2}>
@@ -53,18 +61,42 @@ const Food: React.FC<any> = ({name, unit, kcal, img, id, type}) => {
             )}
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity onPress={handleAdd} style={styles.delete}>
-            {!loading ? (
-              <Icon
-                name="plus"
-                size={20}
-                style={styles.icon}
-                color={Colors.black}
-              />
-            ) : (
-              <SmallLoading />
+          <View style={styles.icon1}>
+            {status === 'UNPUBLISHED' && (
+              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
+                <Icon1
+                  name="public"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              </TouchableOpacity>
             )}
-          </TouchableOpacity>
+
+            {status === 'PENDING' && (
+              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
+                <Icon
+                  name="hourglass"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity onPress={handleAdd} style={styles.delete}>
+              {!loading ? (
+                <Icon
+                  name="plus"
+                  size={20}
+                  style={styles.icon}
+                  color={Colors.black}
+                />
+              ) : (
+                <SmallLoading />
+              )}
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     </TouchableOpacity>
@@ -82,7 +114,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     borderRadius: 16,
     flexDirection: 'row',
-    width: 390,
+    width: 'auto',
     marginBottom: 10,
   },
   img: {
@@ -91,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   textarea: {
-    width: 270,
+    width: 250,
     justifyContent: 'space-around',
     paddingLeft: 10,
   },
@@ -123,6 +155,11 @@ const styles = StyleSheet.create({
   delete: {
     width: 40,
   },
+  icon1: {
+    flexDirection: 'row',
+    width: 80,
+    justifyContent: 'flex-end',
+  }
 });
 
 export default Food;
