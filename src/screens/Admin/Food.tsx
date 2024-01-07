@@ -16,8 +16,8 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import CreateFood from '../../components/Food/Create';
 import CreateActivity from '../../components/Activity/Create';
-import { viewListFood } from '../../services/Food';
-import { listActivity } from '../../services/Activity';
+import { pendingFood, viewListFood } from '../../services/Food';
+import { listActivity, pendingActivity } from '../../services/Activity';
 import { userData } from '../../utils/Storage';
 
 const AdminFood = () => {
@@ -42,31 +42,56 @@ const AdminFood = () => {
 
   // api lấy danh sách food
   const [foodItem, setFoodItem] = useState<any>([]);
+
+  const fetchPendingFood = async () => {
+    const {data} = await pendingFood()
+    return data
+  }
+
   const fetchDataFood = async () => {
     const {data} = await viewListFood(user.id);
+    return data.data
+  };
 
-    setFoodItem(data.data);
+  const fetchData = async () => {
+      const [pendingFoodData, listFoodData] = await Promise.all([fetchPendingFood(), fetchDataFood()]);
+      const combinedData = [...pendingFoodData, ...listFoodData];
+      setFoodItem(combinedData);
   };
+
   useEffect(() => {
-    fetchDataFood();
+    fetchData()
   }, [user]);
+
   const createFood = () => {
-    fetchDataFood();
+    fetchData();
   };
+
   // api lấy danh sách hoạt động
   const [activityItem, setActivityItem] = useState<any>([]);
+  const fetchPendingActivity = async () => {
+    const {data} = await pendingActivity()
+    console.log(data);
+    return data
+  }
 
   const fetchDataActivity = async () => {
     const {data} = await listActivity(user.id);
-    setActivityItem(data);
+    return data
   };
 
+  const fetchData1 = async () => {
+    const [pendingActivityData, listActivityData] = await Promise.all([fetchPendingActivity(), fetchDataActivity()]);
+    const combinedData = [...pendingActivityData, ...listActivityData];
+    setActivityItem(combinedData);
+};
+
   useEffect(() => {
-    fetchDataActivity();
+    fetchData1();
   }, [user]);
 
   const createActivity = () => {
-    fetchDataActivity;
+    fetchData1();
   };
 
   const [isDetail, setIsDetail] = useState<boolean>(false);
@@ -125,7 +150,7 @@ const AdminFood = () => {
         style={[styles.component, create && styles.create]}
         contentContainerStyle={{flexGrow: 1}}>
        {!active
-          ? foodItem &&
+          ? (foodItem &&
             foodItem?.map((item: any, index: any) => (
               <Food
                 key={index}
@@ -133,15 +158,16 @@ const AdminFood = () => {
                 unit={item.unitType}
                 kcal={item.calories}
                 img={item.image}
-                id={1}
+                id={item.id}
                 type={'ADMIN'}
                 status={item.status}
                 carbs={item.carbs}
                 protein={item.protein}
                 fat={item.fat}
+                reload={createFood}
               />
-            ))
-          : activityItem &&
+            )))
+          : (activityItem &&
             activityItem?.map((item: any, index: any) => (
               <Activity
                 key={index}
@@ -153,16 +179,17 @@ const AdminFood = () => {
                 onClose={handleClose}
                 status={item.status}
                 type={"ADMIN"}
+                reload={createActivity}
               />
-            ))}
+            )))}
         <View style={styles.component1} />
       </ScrollView>
       {create && (
         <View style={styles.create1}>
           {!active ? (
-            <CreateFood onClose={onClose} />
+            <CreateFood onClose={onClose} reloadFood ={createFood}/>
           ) : (
-            <CreateActivity onClose={onClose}/>
+            <CreateActivity onClose={onClose} reloadActivity={createActivity}/>
           )}
         </View>
       )}

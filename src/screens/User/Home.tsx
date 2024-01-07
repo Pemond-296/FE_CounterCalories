@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Entypo';
@@ -25,6 +26,7 @@ import {userData} from '../../utils/Storage';
 import {updateDiary, viewDiary} from '../../services/Diary';
 import Activity from '../../components/Activity/Activity';
 import Food from '../../components/Food/Food';
+import { useFocusEffect } from '@react-navigation/native';
 
 const UserHome = () => {
   // Process Date
@@ -135,13 +137,16 @@ const UserHome = () => {
     setDaily(response.data);
     setIndexWater(response?.data?.statistics?.realWater || 0);
     setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
-    setListActivities(response.data.activityList);
-    setListFoods(response.data.foodList);
+    setListActivities(response?.data?.activityList);
+    setListFoods(response?.data?.foodList);
     setActive(true);
+
   };
+  const isFocused = useIsFocused();
+
   useEffect(() => {
     getDaily();
-  }, [date, user]);
+  }, [date, user, isFocused]);
 
   const [isDetail, setIsDetail] = useState<boolean>(false);
 
@@ -152,7 +157,7 @@ const UserHome = () => {
     setIsDetail(false);
   };
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar
         translucent
         backgroundColor="transparent"

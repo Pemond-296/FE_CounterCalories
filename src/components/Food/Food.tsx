@@ -8,6 +8,8 @@ import {useNavigation} from '@react-navigation/native';
 import {updateDiary} from '../../services/Diary';
 //@ts-ignore
 import {getToday} from 'react-native-modern-datepicker';
+import {acceptFood, publicFood} from '../../services/Food';
+
 const Food: React.FC<any> = ({
   name,
   unit,
@@ -21,6 +23,7 @@ const Food: React.FC<any> = ({
   protein,
   userId,
   viewType,
+  reload,
 }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,13 +59,46 @@ const Food: React.FC<any> = ({
       setLoading(false);
     }, 1000);
     const payload = {foodId: id, foodAmount: 100, date: getToday()};
-    const response = await updateDiary(userId, payload);
+    await updateDiary(userId, payload);
   };
 
-  const handlePublic = () => {};
+  const [loading1, setLoading1] = useState<boolean>(false);
+
+  const handlePublic = async () => {
+    const payload = {status: 'PENDING'};
+    setLoading1(true);
+    setTimeout(() => {
+      setLoading1(false);
+    }, 1000);
+    await publicFood(id, payload);
+    reload()
+  };
+
+  const handleUnPublic = async () => {
+    const payload = {status: 'UNPUBLISHED'};
+    setLoading1(true);
+    setTimeout(() => {
+      setLoading1(false);
+    }, 1000);
+    await publicFood(id, payload);
+    reload()
+  };
+
+  const handleAccept = async () => {
+    const payload = {status: 'PUBLISHED'}
+    const response = await acceptFood(id, payload);
+    console.log(response.data);
+    reload()
+  }
+
+  const handleReject = async () => {
+    const payload = {status: 'UNPUBLISHED'}
+    await acceptFood(id, payload);
+    reload()
+  }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handleDetailFood}>
+    <TouchableOpacity style={[styles.container, type==="ADMIN" && status==="PENDING" && styles.pending]} onPress={handleDetailFood}>
       <Image
         source={{
           uri: 'http://' + img,
@@ -76,8 +112,33 @@ const Food: React.FC<any> = ({
         </Text>
       </View>
       <View>
-        {viewType === 'HOME' ? (
+        {type === 'ADMIN' ? (
           <View style={styles.action}>
+             {status === 'PENDING' ? (
+              <>
+                  <TouchableOpacity
+                    onPress={handleAccept}
+                    style={styles.delete}>
+                    <Icon
+                      name="check"
+                      size={20}
+                      style={styles.icon}
+                      color={Colors.black}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleReject}
+                    style={styles.delete}>
+                    <Icon
+                      name="close"
+                      size={20}
+                      style={styles.icon}
+                      color={Colors.black}
+                    />
+                  </TouchableOpacity>
+                </>
+              )
+              : (
             <TouchableOpacity onPress={handleDelete} style={styles.delete}>
                 {!loading ? (
                   <Icon
@@ -90,24 +151,12 @@ const Food: React.FC<any> = ({
                   <SmallLoading />
                 )}
               </TouchableOpacity>
+              )}
           </View>
         ) : (
-          <View style={styles.action}>
-            {type === 'ADMIN' ? (
-              <TouchableOpacity onPress={handleDelete} style={styles.delete}>
-                {!loading ? (
-                  <Icon
-                    name="delete"
-                    size={20}
-                    style={styles.icon}
-                    color={Colors.black}
-                  />
-                ) : (
-                  <SmallLoading />
-                )}
-              </TouchableOpacity>
-            ) : (
-              <View style={styles.icon1}>
+          <View style={styles.icon1}>
+            {!loading1 ? (
+              <>
                 {status === 'UNPUBLISHED' && (
                   <TouchableOpacity
                     onPress={handlePublic}
@@ -123,7 +172,7 @@ const Food: React.FC<any> = ({
 
                 {status === 'PENDING' && (
                   <TouchableOpacity
-                    onPress={handlePublic}
+                    onPress={handleUnPublic}
                     style={styles.delete}>
                     <Icon
                       name="hourglass"
@@ -133,6 +182,10 @@ const Food: React.FC<any> = ({
                     />
                   </TouchableOpacity>
                 )}
+              </>
+            ) : (
+              <SmallLoading />
+            )}
 
                 <TouchableOpacity onPress={handleAdd} style={styles.delete}>
                   {!loading ? (
@@ -149,8 +202,6 @@ const Food: React.FC<any> = ({
               </View>
             )}
           </View>
-        )}
-      </View>
     </TouchableOpacity>
   );
 };
@@ -212,6 +263,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 80,
     justifyContent: 'flex-end',
+  },
+  pending: {
+    backgroundColor: Colors.gray_green,
+    borderColor: Colors.gray_green,
   },
 });
 

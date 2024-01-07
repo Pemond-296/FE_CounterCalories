@@ -65,8 +65,6 @@ const AdminHome = () => {
     };
     fetchData();
   },[]);
-
-
   return (
     <View style={styles.container}>
       <StatusBar

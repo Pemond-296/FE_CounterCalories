@@ -55,8 +55,8 @@ const CreateActivity: React.FC<any> = ({onClose, reloadActivity}) => {
 
 
   const handleCreate = async (data: any) => {
-    const payload = {caloriesConsume: data.kcal, unit: value, name: data.name};
-    const response = await createActivity(user.id, payload);
+    const payload = {userId: user.id,caloriesConsume: data.kcal, unit: value, name: data.name};
+    await createActivity( payload);
     handleExit()
     reloadActivity();
   };

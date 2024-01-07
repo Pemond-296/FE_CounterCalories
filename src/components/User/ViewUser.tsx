@@ -11,7 +11,7 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { SmallLoading } from '../Loading';
 import { useNavigation } from '@react-navigation/native';
 
-const ViewUser = () => {
+const ViewUser:React.FC<any> = () => {
 
     const navigation = useNavigation()
 

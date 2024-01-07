@@ -20,20 +20,19 @@ import Pie from 'react-native-pie';
 
 import Slider from '@react-native-community/slider';
 import EditFood from './Edit';
-import { viewGoalAPI } from '../../services/Goal';
+import {viewGoalAPI} from '../../services/Goal';
 
 const DetailFood: React.FC<any> = ({route}) => {
-  
   const {data}: any = route.params;
 
   const [goals, setGoal] = useState<any>({});
-  useEffect(() =>{
+  useEffect(() => {
     const fetchData = async () => {
-      const response = await viewGoalAPI(data.userId)
-      setGoal(response.data.data)
-    }
-    fetchData()
-  }, [])
+      const response = await viewGoalAPI(data.userId);
+      setGoal(response.data.data);
+    };
+    fetchData();
+  }, []);
 
   const navigation = useNavigation();
   const handleBack = () => {
@@ -53,8 +52,7 @@ const DetailFood: React.FC<any> = ({route}) => {
       setCarbs(data.carbs);
       setFat(data.fat);
       setProtein(data.protein);
-    }
-    else{
+    } else {
       const x = num / 100;
       setKcal(Number((data.kcal * x).toFixed(1)));
       setCarbs(Number((data.carbs * x).toFixed(2)));
@@ -72,7 +70,7 @@ const DetailFood: React.FC<any> = ({route}) => {
   };
 
   return (
-    <View style={{position: 'relative', paddingBottom: 100}}>
+    <View style={{position: 'relative', paddingBottom: 0}}>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -88,8 +86,7 @@ const DetailFood: React.FC<any> = ({route}) => {
           <Icon name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.text}>{data.name}</Text>
-        {(data.type === 'ADMIN' || (data.status === "UNPUBLISHED"))
-        && (
+        {(data.type === 'ADMIN' || data.status === 'UNPUBLISHED') && (
           <TouchableOpacity style={styles.icon2} onPress={handleEdit}>
             <Icon1 name="edit" size={25} color={Colors.white} />
           </TouchableOpacity>
@@ -129,24 +126,26 @@ const DetailFood: React.FC<any> = ({route}) => {
             sections={[
               //fat
               {
-                percentage: (fat/(fat+protein+carbs))*100,
+                percentage: (fat / (fat + protein + carbs)) * 100,
                 color: Colors.fat,
               },
 
               //protein
               {
-                percentage: (protein/(fat+protein+carbs))*100,
+                percentage: (protein / (fat + protein + carbs)) * 100,
                 color: Colors.protein,
               },
               //carbs
               {
-                percentage: (carbs/(fat+protein+carbs))*100,
+                percentage: (carbs / (fat + protein + carbs)) * 100,
                 color: Colors.carbs,
               },
             ]}
             strokeCap={'butt'}
           />
-          <View style={styles.viewtext}><Text style={styles.text6}>{kcal}</Text></View>
+          <View style={styles.viewtext}>
+            <Text style={styles.text6}>{kcal}</Text>
+          </View>
           <Text style={styles.text7}>Kcal</Text>
           <View>
             <View style={styles.field1}>
@@ -189,71 +188,74 @@ const DetailFood: React.FC<any> = ({route}) => {
           </View>
         </View>
 
-        <View style={styles.goal}>
-          <Text style={styles.text8}>Mục tiêu hàng ngày</Text>
-          <View style={styles.chart1}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={styles.unit}>
-                <Slider
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor={Colors.kcal}
-                  maximumTrackTintColor={Colors.kcal}
-                  thumbTintColor="transparent"
-                  style={{width: 150}}
-                  value={Number(100*kcal/goals.tdee)}
-                />
-                <Text style={styles.text9}>
-                  {Number((100* kcal / goals.tdee).toFixed(2))}% Kcal
-                </Text>
+        {data && data?.type === 'USER' && (
+          <View style={styles.goal}>
+            <Text style={styles.text8}>Mục tiêu hàng ngày</Text>
+            <View style={styles.chart1}>
+              <View style={{flexDirection: 'row'}}>
+                <View style={styles.unit}>
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={100}
+                    minimumTrackTintColor={Colors.kcal}
+                    maximumTrackTintColor={Colors.kcal}
+                    thumbTintColor="transparent"
+                    style={{width: 150}}
+                    value={Number((100 * kcal) / goals.tdee)}
+                  />
+                  <Text style={styles.text9}>
+                    {Number(((100 * kcal) / goals.tdee).toFixed(2))}% Kcal
+                  </Text>
+                </View>
+                <View style={styles.unit}>
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={100}
+                    minimumTrackTintColor={Colors.protein}
+                    maximumTrackTintColor={Colors.protein}
+                    thumbTintColor="transparent"
+                    style={{width: 150}}
+                    value={Number((100 * protein) / goals.protein)}
+                  />
+                  <Text style={styles.text9}>
+                    {Number(((100 * protein) / goals.protein).toFixed(2))}% Chất
+                    đạm
+                  </Text>
+                </View>
               </View>
-              <View style={styles.unit}>
-                <Slider
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor={Colors.protein}
-                  maximumTrackTintColor={Colors.protein}
-                  thumbTintColor="transparent"
-                  style={{width: 150}}
-                  value={Number(100*protein/goals.protein)}
-                />
-                <Text style={styles.text9}>
-                  {Number((100*protein/goals.protein).toFixed(2))}% Chất đạm
-                </Text>
-              </View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={styles.unit}>
-                <Slider
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor={Colors.carbs}
-                  maximumTrackTintColor={Colors.carbs}
-                  thumbTintColor="transparent"
-                  style={{width: 150}}
-                  value={Number(100*carbs/goals.carbs)}
-                />
-                <Text style={styles.text9}>
-                  {Number((100*carbs/goals.carbs).toFixed(2))}% Carbs
-                </Text>
-              </View>
-              <View style={styles.unit}>
-                <Slider
-                  minimumValue={0}
-                  maximumValue={100}
-                  minimumTrackTintColor={Colors.fat}
-                  maximumTrackTintColor={Colors.fat}
-                  thumbTintColor="transparent"
-                  style={{width: 150}}
-                  value={Number(100*fat/goals.fat)}
-                />
-                <Text style={styles.text9}>
-                  {Number((100*fat/goals.fat).toFixed(0))}% Chất béo
-                </Text>
+              <View style={{flexDirection: 'row'}}>
+                <View style={styles.unit}>
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={100}
+                    minimumTrackTintColor={Colors.carbs}
+                    maximumTrackTintColor={Colors.carbs}
+                    thumbTintColor="transparent"
+                    style={{width: 150}}
+                    value={Number((100 * carbs) / goals.carbs)}
+                  />
+                  <Text style={styles.text9}>
+                    {Number(((100 * carbs) / goals.carbs).toFixed(2))}% Carbs
+                  </Text>
+                </View>
+                <View style={styles.unit}>
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={100}
+                    minimumTrackTintColor={Colors.fat}
+                    maximumTrackTintColor={Colors.fat}
+                    thumbTintColor="transparent"
+                    style={{width: 150}}
+                    value={Number((100 * fat) / goals.fat)}
+                  />
+                  <Text style={styles.text9}>
+                    {Number(((100 * fat) / goals.fat).toFixed(0))}% Chất béo
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        )}
 
         <View style={styles.goal1}>
           <Text style={styles.text8}>Làm thế nào để tiêu hao {kcal} Kcal</Text>
@@ -481,7 +483,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.error,
     fontWeight: 'bold',
-    textAlign:"center"
+    textAlign: 'center',
   },
   viewtext: {
     position: 'absolute',
@@ -620,7 +622,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    bottom: 125,
+    bottom: -50,
     alignSelf: 'center',
     backgroundColor: Colors.background_header,
     height: 'auto',
@@ -642,12 +644,11 @@ const styles = StyleSheet.create({
         shadowColor: Colors.black,
       },
     }),
-
   },
   addButtonText: {
     color: Colors.white,
     fontSize: 22,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });
 

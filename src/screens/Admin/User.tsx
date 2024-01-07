@@ -15,27 +15,30 @@ import Icon1 from 'react-native-vector-icons/Ionicons'
 import ViewUser from '../../components/User/ViewUser';
 import BanUser from '../../components/User/BanUser';
 import { viewAllUser, viewBanUser } from '../../services/User';
+import { userData } from '../../utils/Storage';
 
-const AdminPerSon = () => {
+const AdminPerSon:React.FC<any> = () => {
   const [active, setActive] = useState<boolean>(false);
 
-  const [allUser, setAllUser] = useState<any>([]);
-  const fetchAllUser = async () => {
-    const response = await viewAllUser()
-    setAllUser(response.data)
-  }
+  const [allUser, setAllUser] = useState<any | null>(null);
+
   useEffect(() => {
+    const fetchAllUser = async () => {
+      const response = await viewAllUser()
+      console.log(response.data)
+      setAllUser(response.data)
+    }
     fetchAllUser()
-  }, [])
+  }, [active])
 
   const [banUser, setBanUser] = useState<any>([]);
-  const fetchBanUser = async () => {
-    const response = await viewBanUser()
-    setAllUser(response.data)
-  }
   useEffect(() => {
+    const fetchBanUser = async () => {
+      const response = await viewBanUser()
+      setAllUser(response.data)
+    }
     fetchBanUser()
-  }, [])
+  }, [active])
 
   return (
     <>
@@ -83,11 +86,20 @@ const AdminPerSon = () => {
         style={styles.component}
         contentContainerStyle={{flexGrow: 1}}
         >
-        {Array(10)
-          .fill(null)
-          .map((_, index) =>
-            !active ? <ViewUser key={index} /> : <BanUser key={index} />,
-          )}
+           {!active
+          ? (allUser &&
+            allUser?.map((item: any, index: any) => (
+              <ViewUser 
+                key={index} 
+
+              />
+            )))
+          : (banUser &&
+            banUser?.map((item: any, index: any) => (
+              <BanUser 
+                key={index} 
+              />
+            )))}
         <View style={styles.component1} />
       </ScrollView>
     </>

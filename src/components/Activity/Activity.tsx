@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import {SmallLoading} from '../Loading';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
 import {updateDiary} from '../../services/Diary';
+import {acceptActivity, publicActivity} from '../../services/Activity';
 
 const Activity: React.FC<any> = ({
   name,
@@ -28,6 +29,7 @@ const Activity: React.FC<any> = ({
   status,
   userId,
   viewType,
+  reload,
 }) => {
   const [modal, setModal] = useState<boolean>(false);
   const navigation = useNavigation();
@@ -54,11 +56,21 @@ const Activity: React.FC<any> = ({
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    const payload = {activityId: id, activitiUnit: 30, date: getToday()};
+    const payload = {activityId: id, activityUnit: 30, date: getToday()};
     const response = await updateDiary(userId, payload);
   };
 
-  const handlePublic = () => {};
+  const [loading1, setLoading1] = useState<boolean>(false);
+  const handlePublic = async () => {
+    const payload = {status: 'PENDING'};
+    setLoading1(true);
+    setTimeout(() => {
+      setLoading1(false);
+    }, 1000);
+    const response = await publicActivity(id, payload);
+    console.log(response);
+    reload();
+  };
 
   type Unit = {
     [propKey: string]: number;
@@ -119,8 +131,20 @@ const Activity: React.FC<any> = ({
     );
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
 
+  const handleAccept = async () => {
+    const payload = {status: 'PUBLISHED'};
+    await acceptActivity(id, payload);
+    reload();
+  };
+
+  const handleReject = async () => {
+    const payload = {status: 'UNPUBLISHED'};
+    await acceptActivity(id, payload);
+    reload();
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={handleDetailActivity}>
+    <TouchableOpacity style={[styles.container, type==="ADMIN" && status==="PENDING" && styles.pending]} onPress={handleDetailActivity}>
       <View style={styles.textarea}>
         <Text style={styles.text1}>{name}</Text>
         <Text style={styles.text2}>
@@ -128,11 +152,41 @@ const Activity: React.FC<any> = ({
         </Text>
       </View>
       <View>
-        {viewType === 'HOME' ? (
+        {type === 'ADMIN' ? (
           <View style={styles.action}>
-            <TouchableOpacity style={styles.delete}>
-              {!loading? (<Icon name='delete' size={20} style={styles.icon} color={Colors.black}></Icon>) : (<SmallLoading></SmallLoading>)}
-            </TouchableOpacity>
+            {status === 'PENDING' ? (
+              <>
+                <TouchableOpacity onPress={handleAccept} style={styles.delete}>
+                  <Icon
+                    name="check"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleReject} style={styles.delete}>
+                  <Icon
+                    name="close"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity onPress={handleDelete} style={styles.delete}>
+                {!loading ? (
+                  <Icon
+                    name="delete"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                ) : (
+                  <SmallLoading />
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
           <View style={styles.action}>
@@ -151,30 +205,36 @@ const Activity: React.FC<any> = ({
               </TouchableOpacity>
             ) : (
               <View style={styles.icon1}>
-                {status === 'UNPUBLISHED' && (
-                  <TouchableOpacity
-                    onPress={handlePublic}
-                    style={styles.delete}>
-                    <Icon1
-                      name="public"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
-                  </TouchableOpacity>
-                )}
+                {!loading1 ? (
+                  <>
+                    {status === 'UNPUBLISHED' && (
+                      <TouchableOpacity
+                        onPress={handlePublic}
+                        style={styles.delete}>
+                        <Icon1
+                          name="public"
+                          size={20}
+                          style={styles.icon}
+                          color={Colors.black}
+                        />
+                      </TouchableOpacity>
+                    )}
 
-                {status === 'PENDING' && (
-                  <TouchableOpacity
-                    onPress={handlePublic}
-                    style={styles.delete}>
-                    <Icon
-                      name="hourglass"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
-                  </TouchableOpacity>
+                    {status === 'PENDING' && (
+                      <TouchableOpacity
+                        onPress={handlePublic}
+                        style={styles.delete}>
+                        <Icon
+                          name="hourglass"
+                          size={20}
+                          style={styles.icon}
+                          color={Colors.black}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </>
+                ) : (
+                  <SmallLoading />
                 )}
 
                 <TouchableOpacity onPress={handleAdd} style={styles.delete}>
@@ -504,6 +564,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 80,
     justifyContent: 'flex-end',
+  },
+  pending: {
+    backgroundColor: Colors.gray_green,
+    borderColor: Colors.gray_green,
   },
 });
 

@@ -145,6 +145,7 @@ const UserFood = () => {
                 protein={item.protein}
                 fat={item.fat}
                 userId = {user.id}
+                reload = {createFood}
               />
             ))
           : activityItem &&
@@ -160,6 +161,7 @@ const UserFood = () => {
                 status={item.status}
                 type={"USER"}
                 userId={user.id}
+                reload  = {createActivity}
               />
             ))}
 

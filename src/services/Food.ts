@@ -57,9 +57,28 @@ export const findFood = async(param: string) => {
 
 export const publicFood = async(id: number, payload: any) => {
     try{
-        const response = await foodAPI.put('/'+ id, payload)
+        const response = await foodAPI.put('/' + id, payload)
         return response
     }catch(err : any){
         return err.response
     }
 }
+
+export const pendingFood = async() => {
+    try{
+        const response = await foodAPI.get('/public')
+        return response.data
+    }catch(err : any){
+        return err.response
+    }
+}
+
+export const acceptFood = async(id: number, payload: any) => {
+    try{
+        const response = await foodAPI.put('/approve/' + id, payload)
+        return response.data
+    }catch(err : any){
+        return err.response
+    }
+}
+
