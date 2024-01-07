@@ -54,8 +54,9 @@ const Activity: React.FC<any> = ({
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    const payload = {activityId: id, activitiUnit: 30, date: getToday()};
+    const payload = {activityId: id, activityUnit: 30, date: getToday()};
     const response = await updateDiary(userId, payload);
+    console.log(response);
   };
 
   const handlePublic = () => {};

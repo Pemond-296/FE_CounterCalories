@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../utils/Color';
 import {useNavigation} from '@react-navigation/native';
 import Password from '../../components/Setting/Password';
-import EditInfor from '../../components/Setting/EditInfor';
+import EditInfo from '../../components/Setting/EditInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {storage, userData} from '../../utils/Storage';
 import {viewProfile} from '../../services/User';
@@ -34,9 +34,8 @@ const Setting = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response: any = await viewProfile(user.id);
-      console.log(response.data)
-      setCurrentUserData(response);
+      const response: any = await viewProfile(user?.id);
+      setCurrentUserData(response?.data?.data);
     };
     fetchData();
   }, [user]);
@@ -91,7 +90,7 @@ const Setting = () => {
               color={Colors.black}
             />
           </View>
-          {action === 2 && <EditInfor onClose={onClose} user={currentUserData} />}
+          {action === 2 && <EditInfo onClose={onClose} user={currentUserData?.profile} />}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.field} onPress={handlePassword}>

@@ -24,4 +24,6 @@ export const Colors = {
     kcal: "#3742fa",
     percent: "#fa983a",
     blue: "#74b9ff",
+    info: "#E46212",
+    real_black: "#000000"
 }

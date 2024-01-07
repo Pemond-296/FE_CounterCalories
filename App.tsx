@@ -30,6 +30,7 @@ import Splash from './src/screens/Splash';
 import DetailUser from './src/components/User/DetailUser';
 import Follow from './src/components/User/Follow';
 import Setting from './src/screens/User/Setting';
+import {CreatePost} from './src/components/Post/CreatePost';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,7 +70,7 @@ const UserScreen = () => {
           height: 50,
         },
         headerShown: false,
-        tabBarHideOnKeyboard: true
+        tabBarHideOnKeyboard: true,
       })}>
       <Tab.Screen name="Home" component={UserHome} />
       <Tab.Screen name="Food" component={UserFood} />
@@ -146,6 +147,7 @@ const AppChild = () => {
         <Stack.Screen name="DetailPost" component={DetailPost} />
         <Stack.Screen name="DetailFood" component={DetailFood} />
         <Stack.Screen name="DetailUser" component={DetailUser} />
+        <Stack.Screen name="CreatePost" component={CreatePost} />
 
         <Stack.Screen name="Follow" component={Follow} />
         <Stack.Screen name="Setting" component={Setting} />

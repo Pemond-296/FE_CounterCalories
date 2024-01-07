@@ -14,7 +14,7 @@ import {Colors} from '../../utils/Color';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
-import DetailCalory from '../Food/Calories';
+import DetailFoodCalories from '../Food/FoodCalories';
 import Comment from './Comment';
 import {userData} from '../../utils/Storage';
 
@@ -128,7 +128,7 @@ const DetailPost: React.FC<any> = () => {
           <View style={styles.calory}>
             <View>
               <Text style={styles.text9}>Tổng năng lượng</Text>
-              <DetailCalory />
+              <DetailFoodCalories calories={235} carbs={23} fat={12} protein={13} />
             </View>
             <View>
               <Text style={styles.text9}>Chi tiết dinh dưỡng</Text>
@@ -136,9 +136,7 @@ const DetailPost: React.FC<any> = () => {
                 .fill(null)
                 .map((_, index) => (
                   <View key={index} style={styles.detail}>
-                    <Text style={styles.text10}>Socola</Text>
-                    <Text style={styles.text11}>2 cái (200g)</Text>
-                    <DetailCalory />
+                    <DetailFoodCalories foodName={'Socola'} unitType={'cái'} calories={235} carbs={23} fat={12} protein={13} />
                   </View>
                 ))}
             </View>

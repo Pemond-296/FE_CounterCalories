@@ -16,6 +16,7 @@ import DatePicker from 'react-native-modern-datepicker';
 //@ts-ignore
 import {getToday} from 'react-native-modern-datepicker';
 import moment from 'moment';
+import { useIsFocused } from '@react-navigation/native';
 
 //@ts-ignore
 import Pie from 'react-native-pie';
@@ -25,13 +26,17 @@ import {userData} from '../../utils/Storage';
 import {updateDiary, viewDiary} from '../../services/Diary';
 import Activity from '../../components/Activity/Activity';
 import Food from '../../components/Food/Food';
+import {useNavigation} from '@react-navigation/native';
 
 const UserHome = () => {
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
   // Process Date
   const today = getToday();
   const [date, setDate] = useState<string>(today);
   // Open DatePicker
   const [open, setOpen] = useState<boolean>(false);
+
   const handleDatePicker = () => {
     setOpen(!open);
   };
@@ -132,16 +137,17 @@ const UserHome = () => {
   const [daily, setDaily] = useState<any>({});
   const getDaily = async () => {
     const response = await viewDiary(user.id, date);
+    console.log(response);
     setDaily(response.data);
     setIndexWater(response?.data?.statistics?.realWater || 0);
     setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
-    setListActivities(response.data.activityList);
-    setListFoods(response.data.foodList);
+    setListActivities(response?.data?.activityList);
+    setListFoods(response?.data?.foodList);
     setActive(true);
   };
   useEffect(() => {
     getDaily();
-  }, [date, user]);
+  }, [date, user, isFocused]);
 
   const [isDetail, setIsDetail] = useState<boolean>(false);
 
@@ -150,6 +156,11 @@ const UserHome = () => {
   };
   const handleClose = () => {
     setIsDetail(false);
+  };
+
+  const handleCreatePost = () => {
+    //@ts-ignore
+    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities}});
   };
   return (
     <ScrollView>
@@ -363,7 +374,7 @@ const UserHome = () => {
       <View style={styles.container}>
         <View style={styles.fieldwater}>
           <Text style={styles.text8}>Chi tiết dinh dưỡng</Text>
-          <TouchableOpacity style={styles.share}>
+          <TouchableOpacity style={styles.share} onPress={handleCreatePost}>
             <Text style={styles.text5}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
