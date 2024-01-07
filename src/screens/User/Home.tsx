@@ -26,14 +26,16 @@ import {userData} from '../../utils/Storage';
 import {updateDiary, viewDiary} from '../../services/Diary';
 import Activity from '../../components/Activity/Activity';
 import Food from '../../components/Food/Food';
-import { useFocusEffect } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const UserHome = () => {
+  const navigation = useNavigation();
   // Process Date
   const today = getToday();
   const [date, setDate] = useState<string>(today);
   // Open DatePicker
   const [open, setOpen] = useState<boolean>(false);
+
   const handleDatePicker = () => {
     setOpen(!open);
   };
@@ -134,6 +136,7 @@ const UserHome = () => {
   const [daily, setDaily] = useState<any>({});
   const getDaily = async () => {
     const response = await viewDiary(user.id, date);
+    console.log(response);
     setDaily(response.data);
     setIndexWater(response?.data?.statistics?.realWater || 0);
     setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
@@ -155,6 +158,11 @@ const UserHome = () => {
   };
   const handleClose = () => {
     setIsDetail(false);
+  };
+
+  const handleCreatePost = () => {
+    //@ts-ignore
+    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities}});
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -368,7 +376,7 @@ const UserHome = () => {
       <View style={styles.container}>
         <View style={styles.fieldwater}>
           <Text style={styles.text8}>Chi tiết dinh dưỡng</Text>
-          <TouchableOpacity style={styles.share}>
+          <TouchableOpacity style={styles.share} onPress={handleCreatePost}>
             <Text style={styles.text5}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>

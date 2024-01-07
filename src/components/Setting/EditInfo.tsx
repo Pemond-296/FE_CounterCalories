@@ -6,6 +6,7 @@ import {
   View,
   Text,
   Platform,
+  Alert,
 } from 'react-native';
 import {Colors} from '../../utils/Color';
 import {useNavigation} from '@react-navigation/native';
@@ -15,7 +16,7 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import { updateInfor } from '../../services/User';
 
-const EditInfor: React.FC<any> = ({onClose, user}) => {
+const EditInfo: React.FC<any> = ({onClose, user}) => {
   const navigation = useNavigation();
 
   const handleChangeGoal = () => {
@@ -39,8 +40,14 @@ const EditInfor: React.FC<any> = ({onClose, user}) => {
   });
 
   const handleUpdateProfile = async(data: userSignup) => {
+    data.gender = (data?.gender === 'Nam' ? 'Male' : 'Female');
     const response = await updateInfor(data, user.id);
+
+    if (response.status === 200) {
+      Alert.alert('Update complete!');
+    }
   };
+  console.log(user);
 
   const {
     register,
@@ -187,4 +194,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditInfor;
+export default EditInfo;
