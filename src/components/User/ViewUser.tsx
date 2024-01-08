@@ -11,13 +11,12 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { SmallLoading } from '../Loading';
 import { useNavigation } from '@react-navigation/native';
 
-const ViewUser = () => {
+const ViewUser:React.FC<any> = ({id, age, gender, height, name, weight}) => {
 
     const navigation = useNavigation()
 
     const [loading, setLoading] = useState<boolean>(false)
     const handleDelete = () => {
-        console.log("delete r cu")
         setLoading(true)
         setTimeout(() => {
             setLoading(false)
@@ -25,11 +24,9 @@ const ViewUser = () => {
     }
 
     const handleEdit = () => {
-        console.log("edit r cu")
     }
 
     const handleDetailFood = () => {
-        console.log("Detail Here")
         // @ts-ignore
         navigation.navigate("DetailUser")
     }
@@ -37,7 +34,6 @@ const ViewUser = () => {
     
   const [loadingBan, setLoadingBan] = useState<boolean>(false);
     const handleBan = () => {
-        console.log("ban chet cmm r cu")
         setLoadingBan(true);
         setTimeout(() => {
           setLoadingBan(false);
@@ -55,10 +51,10 @@ const ViewUser = () => {
             />
             <View style={styles.textarea}>
                 <Text style={styles.text1}>
-                    Pemond
+                    {name}
                 </Text>
                 <Text style={styles.text2}>
-                    Nam - 50kg - 175cm 
+                    {gender === "Male" ? "Nam" : "Nữ"} - {weight}kg - {height}cm 
                 </Text>
             </View>
             <View style={styles.action}>

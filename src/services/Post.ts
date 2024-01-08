@@ -13,7 +13,7 @@ const postAPI = axios.create({
 export const createPost = async (payload: any) => {
     try{
         const response = await postAPI.post("", payload)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -40,7 +40,7 @@ export const deletePost = async (id: number) => {
 export const viewListPost = async () => {
     try{
         const response = await postAPI.get("")
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -49,7 +49,7 @@ export const viewListPost = async () => {
 export const viewDetailPost = async (id: number) => {
     try{
         const response = await postAPI.get("/" + id)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -58,7 +58,7 @@ export const viewDetailPost = async (id: number) => {
 export const createComment = async (payload: any) => {
     try{
         const response = await postAPI.post("/comment", payload)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -67,7 +67,7 @@ export const createComment = async (payload: any) => {
 export const updateComment = async (id: number, payload: any) => {
     try{
         const response = await postAPI.put("/comment/" + id, payload)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -76,7 +76,7 @@ export const updateComment = async (id: number, payload: any) => {
 export const deleteComment = async (id: number) => {
     try{
         const response = await postAPI.delete("/comment/" + id)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -94,7 +94,7 @@ export const viewListComment = async (post_id: number) => {
 export const viewListReaction = async (post_id: number) => {
     try{
         const response = await postAPI.get("/reaction/" + post_id)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -103,7 +103,7 @@ export const viewListReaction = async (post_id: number) => {
 export const updateReaction = async (payload: any) => {
     try{
         const response = await postAPI.put("/reaction", payload)
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }

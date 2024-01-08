@@ -53,7 +53,7 @@ export const changePassword = async (payload: updatePassword) => {
 
 export const viewProfile = async (id: number) => {
     try{
-        const response = await userAPI.get('/view-profile/' + id);
+        const response = await userAPI.get('/' + id + '/profile');
         return response
     }
     catch(err : any){
@@ -82,7 +82,7 @@ export const createAdmin = async(payload: userLogin) => {
 export const viewAllUser = async () => {
     try{
         const response = await userAPI.get('/all-user')
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }
@@ -91,7 +91,7 @@ export const viewAllUser = async () => {
 export const viewBanUser = async () => {
     try{
         const response = await userAPI.get('/ban-user')
-        return response
+        return response.data
     }catch(err : any){
         return err.response
     }

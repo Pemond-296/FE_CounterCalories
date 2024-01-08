@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Entypo';
@@ -20,15 +21,21 @@ import moment from 'moment';
 //@ts-ignore
 import Pie from 'react-native-pie';
 import * as Progress from 'react-native-progress';
-import { viewGoalAPI } from '../../services/Goal';
-import { userData } from '../../utils/Storage';
+import {viewGoalAPI} from '../../services/Goal';
+import {userData} from '../../utils/Storage';
+import {updateDiary, viewDiary} from '../../services/Diary';
+import Activity from '../../components/Activity/Activity';
+import Food from '../../components/Food/Food';
+import {useNavigation} from '@react-navigation/native';
 
 const UserHome = () => {
+  const navigation = useNavigation();
   // Process Date
   const today = getToday();
   const [date, setDate] = useState<string>(today);
   // Open DatePicker
   const [open, setOpen] = useState<boolean>(false);
+
   const handleDatePicker = () => {
     setOpen(!open);
   };
@@ -79,7 +86,7 @@ const UserHome = () => {
   // Process Water
   const [indexWater, setIndexWater] = useState<number>(0);
   const [water, setWater] = useState<number>(0);
-  const handleWater = (index: number) => {
+  const handleWater = async (index: number) => {
     if (index == indexWater) {
       setIndexWater(index + 1);
       setWater(250 * (index + 1));
@@ -88,12 +95,18 @@ const UserHome = () => {
       setIndexWater(indexWater - 1);
       setWater(250 * (indexWater - 1));
     }
+    const payload = {date: date, water: indexWater + 1};
+    await updateDiary(user.id, payload);
   };
 
   // Process food and activities
   const [active, setActive] = useState<boolean>(false);
 
+  const [listActivities, setListActivities] = useState<any>();
+  const [listFoods, setListFoods] = useState<any>();
+
   const Col = ({numCol, children}: {numCol: any; children: any}) => {
+    //@ts-ignore
     return <View style={styles[`${numCol}col`]}>{children}</View>;
   };
 
@@ -108,24 +121,49 @@ const UserHome = () => {
       setUser(response);
     };
     fetchData();
-  },[]);
+  }, []);
 
   // get data
   const [goals, setGoal] = useState<any>({});
-  useEffect(() =>{
+  useEffect(() => {
     const fetchData = async () => {
-      const response = await viewGoalAPI(user.id)
-      console.log(response.data.data)
-      setGoal(response.data.data)
-    }
-    fetchData()
-  }, [user])
+      const response = await viewGoalAPI(user.id);
+      setGoal(response.data.data);
+    };
+    fetchData();
+  }, [user]);
 
   const [daily, setDaily] = useState<any>({});
+  const getDaily = async () => {
+    const response = await viewDiary(user.id, date);
+    setDaily(response.data)
+    setIndexWater(response?.data?.statistics?.realWater || 0);
+    setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
+    setListActivities(response?.data?.activityList);
+    setListFoods(response?.data?.foodList);
+    setActive(true);
+  };
+  const isFocused = useIsFocused();
 
+  useEffect(() => {
+    getDaily();
+  }, [date, user, isFocused]);
 
+  const [isDetail, setIsDetail] = useState<boolean>(false);
+
+  const handleDetailActivity = () => {
+    setIsDetail(true);
+  };
+  const handleClose = () => {
+    setIsDetail(false);
+  };
+
+  const handleCreatePost = () => {
+    //@ts-ignore
+    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities, real: daily.statistics}});
+  };
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar
         translucent
         backgroundColor="transparent"
@@ -151,99 +189,138 @@ const UserHome = () => {
           </View>
         </View>
         <View style={styles.headerContent}>
-            <Row>
-              <Col numCol={2}>
+          <Row>
+            <Col numCol={2}>
+              <Row>
+                <Text style={styles.text1}>
+                  {daily?.statistics?.realTdee || 0}
+                </Text>
+              </Row>
+              <Row>
+                <Text style={styles.text1}>ĐÃ NẠP</Text>
+              </Row>
+            </Col>
+            <Col numCol={2}>
+              <View style={styles.center}>
                 <Row>
-                  <Text style={styles.text1}>0</Text>
+                  <Text style={styles.text4}>
+                    {goals?.tdee -
+                      daily?.statistics?.realTdee +
+                      daily?.totalConsumes || goals?.tdee}
+                  </Text>
                 </Row>
                 <Row>
-                  <Text style={styles.text1}>ĐÃ NẠP</Text>
+                  <Text style={styles.text2}>cần nạp</Text>
                 </Row>
-              </Col>
-              <Col numCol={2}>
-                <View style={styles.center}>
-                  <Row>
-                    <Text style={styles.text4}>1894</Text>
-                  </Row>
-                  <Row>
-                    <Text style={styles.text2}>cần nạp</Text>
-                  </Row>
-                </View>
-                <Pie
-                  radius={70}
-                  innerRadius={65}
-                  sections={[
-                    {
-                      percentage: 5,
-                      color: Colors.white,
-                    },
-                    {
-                      percentage: 95,
-                      color: Colors.gray_green,
-                    },
-                  ]}
-                  strokeCap={'butt'}>
-                  {' '}
-                </Pie>
-              </Col>
-              <Col numCol={2}>
-                <Row>
-                  <Text style={styles.text1}>0</Text>
-                </Row>
-                <Row>
-                  <Text style={styles.text1}>TIÊU HAO</Text>
-                </Row>
-              </Col>
-            </Row>
-            <Row>
-              <Col numCol={2}>
-                <Row>
-                  <Text style={styles.text2}>Carbs</Text>
-                </Row>
-                <Row>
-                  <Progress.Bar
-                    progress={0}
-                    width={100}
-                    color={Colors.gray_green}
-                  />
-                </Row>
-                <Row>
-                  <Text style={styles.text2}>0/166</Text>
-                </Row>
-              </Col>
-              <Col numCol={2}>
-                <Row>
-                  <Text style={styles.text2}>Protein</Text>
-                </Row>
-                <Row>
-                  <Progress.Bar
-                    progress={0}
-                    width={100}
-                    color={Colors.gray_green}
-                  />
-                </Row>
-                <Row>
-                  <Text style={styles.text2}>0/166</Text>
-                </Row>
-              </Col>
-              <Col numCol={2}>
-                <Row>
-                  <Text style={styles.text2}>Fats</Text>
-                </Row>
-                <Row>
-                  <Progress.Bar
-                    progress={0}
-                    width={100}
-                    color={Colors.gray_green}
-                  />
-                </Row>
-                <Row>
-                  <Text style={styles.text2}>0/63</Text>
-                </Row>
-              </Col>
-            </Row>
-          </View>
-          <View style={{width:800, backgroundColor: Colors.background_header , height: 800, borderRadius: 9999, position: "absolute", top: -345, zIndex: -1, alignSelf: "center"}}></View>
+              </View>
+              <Pie
+                radius={70}
+                innerRadius={65}
+                sections={[
+                  {
+                    percentage:
+                      100 -
+                        100 *
+                          ((goals?.tdee -
+                            daily?.statistics?.realTdee +
+                            daily?.totalConsumes) /
+                            goals?.tdee) || 0,
+                    color: Colors.white,
+                  },
+                  {
+                    percentage:
+                      100 *
+                        ((goals?.tdee -
+                          daily?.statistics?.realTdee +
+                          daily?.totalConsumes) /
+                          goals?.tdee) || 100,
+                    color: Colors.gray_green,
+                  },
+                ]}
+                strokeCap={'butt'}>
+                {' '}
+              </Pie>
+            </Col>
+            <Col numCol={2}>
+              <Row>
+                <Text style={styles.text1}>{daily?.totalConsumes || 0}</Text>
+              </Row>
+              <Row>
+                <Text style={styles.text1}>TIÊU HAO</Text>
+              </Row>
+            </Col>
+          </Row>
+          <Row>
+            <Col numCol={2}>
+              <Row>
+                <Text style={styles.text2}>Carbs</Text>
+              </Row>
+              <Row>
+                <Progress.Bar
+                  progress={
+                    Number(daily?.statistics?.realCarbs / goals?.carbs) || 0
+                  }
+                  width={100}
+                  color={Colors.white}
+                />
+              </Row>
+              <Row>
+                <Text style={styles.text2}>
+                  {daily?.statistics?.realCarbs || 0}/{goals?.carbs}
+                </Text>
+              </Row>
+            </Col>
+            <Col numCol={2}>
+              <Row>
+                <Text style={styles.text2}>Protein</Text>
+              </Row>
+              <Row>
+                <Progress.Bar
+                  progress={
+                    Number(daily?.statistics?.realProtein / goals?.protein) || 0
+                  }
+                  width={100}
+                  color={Colors.white}
+                />
+              </Row>
+              <Row>
+                <Text style={styles.text2}>
+                  {daily?.statistics?.realProtein || 0}/{goals?.protein}
+                </Text>
+              </Row>
+            </Col>
+            <Col numCol={2}>
+              <Row>
+                <Text style={styles.text2}>Fats</Text>
+              </Row>
+              <Row>
+                <Progress.Bar
+                  progress={
+                    Number(daily?.statistics?.realFat / goals?.fat) || 0
+                  }
+                  width={100}
+                  color={Colors.white}
+                />
+              </Row>
+              <Row>
+                <Text style={styles.text2}>
+                  {daily?.statistics?.realFat || 0}/{goals?.fat}
+                </Text>
+              </Row>
+            </Col>
+          </Row>
+        </View>
+        <View
+          style={{
+            width: 800,
+            backgroundColor: Colors.background_header,
+            height: 800,
+            borderRadius: 9999,
+            position: 'absolute',
+            top: -345,
+            alignSelf: 'center',
+            zIndex: -1,
+          }}></View>
       </View>
       <Modal animationType="slide" transparent visible={open}>
         <View style={styles.centerViews}>
@@ -264,7 +341,10 @@ const UserHome = () => {
         <View>
           <View style={styles.fieldwater}>
             <Text style={styles.text8}>Bạn đã uống bao nhiêu nước</Text>
-            <Text style={styles.text9}> {water}/2157ml</Text>
+            <Text style={styles.text9}>
+              {' '}
+              {water}/{goals?.water}ml
+            </Text>
           </View>
 
           <View style={styles.container1}>
@@ -294,7 +374,7 @@ const UserHome = () => {
       <View style={styles.container}>
         <View style={styles.fieldwater}>
           <Text style={styles.text8}>Chi tiết dinh dưỡng</Text>
-          <TouchableOpacity style={styles.share}>
+          <TouchableOpacity style={styles.share} onPress={handleCreatePost}>
             <Text style={styles.text5}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
@@ -314,8 +394,52 @@ const UserHome = () => {
             </Text>
           </View>
         ) : (
-          <View style={styles.container1}>
-            <Text style ={styles.text13}>Thực phẩm</Text>
+          <View>
+            <View style={styles.activitiesContainer}>
+              <Text style={styles.text13}>Hoạt động</Text>
+              {listActivities &&
+                listActivities?.map((item: any, index: any) => (
+                  <View key={index} style={styles.activityItem}>
+                    <Activity
+                      id={item.id}
+                      name={item.name}
+                      unit={'30 phút'}
+                      kcal={item.caloriesConsume}
+                      onDetail={handleDetailActivity}
+                      onClose={handleClose}
+                      status={item.status}
+                      type={'USER'}
+                      userId={user.id}
+                      viewType="HOME"
+                      quantity={item.minutes/30}
+                    />
+                  </View>
+                ))}
+            </View>
+
+            <View style={styles.foodsContainer}>
+              <Text style={styles.text13}>Thức ăn</Text>
+              {listFoods &&
+                listFoods?.map((item: any, index: any) => (
+                  <View key={index} style={styles.foodItem}>
+                    <Food
+                      name={item.foodName}
+                      unit={item.unitType}
+                      kcal={item.calories}
+                      img={item.image}
+                      id={item.id}
+                      type={'USER'}
+                      status={item.status}
+                      carbs={item.carbs}
+                      protein={item.protein}
+                      fat={item.fat}
+                      userId={user.id}
+                      viewType="HOME"
+                      quantity={item.amount/100}
+                    />
+                  </View>
+                ))}
+            </View>
           </View>
         )}
       </View>
@@ -329,10 +453,10 @@ const styles = StyleSheet.create({
     height: 400,
     paddingTop: 35,
     paddingBottom: 10,
-    marginBottom: 50
+    marginBottom: 50,
   },
   field: {
-    marginTop:20,
+    marginTop: 20,
     display: 'flex',
     flexDirection: 'row',
     paddingHorizontal: 15,
@@ -509,8 +633,8 @@ const styles = StyleSheet.create({
     width: 'auto',
     shadowColor: Colors.gender,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 2,
+      height: 5,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -549,6 +673,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.black,
     fontWeight: '700',
+    marginBottom: 20,
   },
   headerContent: {
     marginTop: 40,
@@ -579,6 +704,56 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 40,
     alignItems: 'center',
+  },
+  activitiesContainer: {
+    width: '100%',
+    backgroundColor: Colors.white,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 16,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 2,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    flexDirection: 'column',
+    marginTop: 15,
+  },
+  activityItem: {
+    borderWidth: 2,
+    borderColor: Colors.light_gray,
+    borderBottomWidth: 3,
+    borderRadius: 16,
+    marginBottom: 7,
+    shadowOpacity: 0.25,
+  },
+  foodsContainer: {
+    width: '100%',
+    backgroundColor: Colors.white,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 16,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 2,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    flexDirection: 'column',
+    marginTop: 15,
+  },
+  foodItem: {
+    borderWidth: 2,
+    borderColor: Colors.light_gray,
+    borderBottomWidth: 3,
+    borderRadius: 16,
+    marginBottom: 7,
+    shadowOpacity: 0.25,
   },
 });
 

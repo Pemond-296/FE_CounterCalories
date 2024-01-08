@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StatusBar,
@@ -11,15 +11,34 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../../utils/Color';
 import {useNavigation} from '@react-navigation/native';
 import Password from '../../components/Setting/Password';
-import EditInfor from '../../components/Setting/EditInfor';
+import EditInfo from '../../components/Setting/EditInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { storage } from '../../utils/Storage';
+import {storage, userData} from '../../utils/Storage';
+import {viewProfile} from '../../services/User';
 
 const Setting = () => {
+  const [user, setUser] = useState<any>();
+  const [currentUserData, setCurrentUserData] = useState<any>();
   const navigation = useNavigation();
   const handleBack = () => {
     navigation.goBack();
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await viewProfile(user?.id);
+      setCurrentUserData(response?.data?.data);
+    };
+    fetchData();
+  }, [user]);
 
   const [action, setAction] = useState<number>(0);
 
@@ -35,13 +54,15 @@ const Setting = () => {
 
   const onClose = () => {
     setAction(0);
-  }
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem(storage)
-    navigation.reset
-    // @ts-ignore
-    navigation.navigate("Login")
+    navigation.reset({
+      index: 0,
+      //@ts-ignore
+      routes: [{ name: 'Splash' }],
+  });
   }
 
   return (
@@ -59,7 +80,6 @@ const Setting = () => {
       </View>
 
       <View style={styles.container}>
-
         <TouchableOpacity style={styles.field} onPress={handleInfor}>
           <View style={{flexDirection: 'row'}}>
             <Icon name="person" size={22} color={Colors.black} />
@@ -70,7 +90,7 @@ const Setting = () => {
               color={Colors.black}
             />
           </View>
-          {action === 2 && <EditInfor onClose = {onClose}/>}
+          {action === 2 && <EditInfo onClose={onClose} user={currentUserData?.profile} />}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.field} onPress={handlePassword}>
@@ -83,7 +103,7 @@ const Setting = () => {
               color={Colors.black}
             />
           </View>
-          {action === 3 && <Password onClose = {onClose}/>}
+          {action === 3 && <Password onClose={onClose} />}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.field} onPress={handleLogout}>

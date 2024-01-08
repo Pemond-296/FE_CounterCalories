@@ -23,14 +23,13 @@ const Action: React.FC<any> = ({onClose, user}) => {
 
   const [reason, setReason] = useState<string>("")
   const handleReport = (rs: string) => {
-    console.log(rs)
     onClose();
   }
 
   return (
     <View style={styles.onAction}>
       <View style={styles.container1}>
-        {user && user.role !== 'ADMIN' ? (
+        {user && user.role === 'ADMIN' ? (
           <>
             <TouchableOpacity onPress={deletePost}>
               <View style={styles.ban}>

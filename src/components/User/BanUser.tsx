@@ -13,7 +13,6 @@ import {SmallLoading} from '../Loading';
 const BanUser = () => {
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
   const handleDelete = () => {
-    console.log('delete r cu');
     setLoadingDelete(true);
     setTimeout(() => {
       setLoadingDelete(false);
@@ -22,7 +21,6 @@ const BanUser = () => {
 
   const [loadingUnban, setLoadingUnBan] = useState<boolean>(false);
   const handleUnBan = () => {
-    console.log('Unban r cu');
     setLoadingUnBan(true);
     setTimeout(() => {
       setLoadingUnBan(false);
@@ -30,7 +28,6 @@ const BanUser = () => {
   };
 
   const handleDetailFood = () => {
-    console.log('Detail Here');
   };
 
   return (

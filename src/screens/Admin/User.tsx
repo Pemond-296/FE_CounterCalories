@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -14,9 +14,31 @@ import Icon from 'react-native-vector-icons/EvilIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons'
 import ViewUser from '../../components/User/ViewUser';
 import BanUser from '../../components/User/BanUser';
+import { viewAllUser, viewBanUser } from '../../services/User';
+import { userData } from '../../utils/Storage';
 
-const AdminPerSon = () => {
+const AdminPerSon:React.FC<any> = () => {
   const [active, setActive] = useState<boolean>(false);
+
+  const [allUser, setAllUser] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchAllUser = async () => {
+      const response = await viewAllUser()
+      setAllUser(response.data)
+    }
+    fetchAllUser()
+  }, [active])
+
+  const [banUser, setBanUser] = useState<any>([]);
+  useEffect(() => {
+    const fetchBanUser = async () => {
+      const response = await viewBanUser()
+      setAllUser(response.data)
+    }
+    fetchBanUser()
+  }, [active])
+
   return (
     <>
       <StatusBar
@@ -63,11 +85,25 @@ const AdminPerSon = () => {
         style={styles.component}
         contentContainerStyle={{flexGrow: 1}}
         >
-        {Array(10)
-          .fill(null)
-          .map((_, index) =>
-            !active ? <ViewUser key={index} /> : <BanUser key={index} />,
-          )}
+           {!active
+          ? (allUser &&
+            allUser?.map((item: any, index: any) => (
+              <ViewUser 
+                key={index} 
+                gender={item.gender}
+                age={item.age}
+                height={item.height}
+                id={item.id}
+                weight={item.weight}
+                name={item.username}
+              />
+            )))
+          : (banUser &&
+            banUser?.map((item: any, index: any) => (
+              <BanUser 
+                key={index} 
+              />
+            )))}
         <View style={styles.component1} />
       </ScrollView>
     </>

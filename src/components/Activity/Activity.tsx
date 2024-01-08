@@ -7,12 +7,16 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+//@ts-ignore
+import {getToday} from 'react-native-modern-datepicker';
 
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {SmallLoading} from '../Loading';
 import Icon1 from 'react-native-vector-icons/MaterialIcons';
+import {updateDiary} from '../../services/Diary';
+import {acceptActivity, publicActivity} from '../../services/Activity';
 
 const Activity: React.FC<any> = ({
   name,
@@ -23,9 +27,12 @@ const Activity: React.FC<any> = ({
   onClose,
   type,
   status,
+  userId,
+  viewType,
+  reload,
+  quantity,
 }) => {
   const [modal, setModal] = useState<boolean>(false);
-  const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
   const handleDelete = () => {
     setLoading(true);
@@ -44,14 +51,26 @@ const Activity: React.FC<any> = ({
     setModal(false);
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+    const payload = {activityId: id, activityUnit: 30, date: getToday()};
+    const response = await updateDiary(userId, payload);
+
   };
 
-  const handlePublic = () => {};
+  const [loading1, setLoading1] = useState<boolean>(false);
+  const handlePublic = async () => {
+    const payload = {status: 'PENDING'};
+    setLoading1(true);
+    setTimeout(() => {
+      setLoading1(false);
+    }, 1000);
+  await publicActivity(id, payload);
+    reload();
+  };
 
   type Unit = {
     [propKey: string]: number;
@@ -65,10 +84,11 @@ const Activity: React.FC<any> = ({
     '1 giờ': 1,
   };
 
-  const [currentTimeUnitStep, setCurrentTimeUnitStep] = useState<string>('1 phút');
+  const [currentTimeUnitStep, setCurrentTimeUnitStep] =
+    useState<string>('1 phút');
   const [currentActivityTime, setCurrentActivityTime] = useState<number>(30);
   const [currentTimeUnit, setCurrentTimeUnit] = useState<string>('phút');
-  const [currentActivityKcal, setCurrentActivityKcal] = useState<number>(kcal)
+  const [currentActivityKcal, setCurrentActivityKcal] = useState<number>(kcal);
 
   const handleChooseUnit = (text: string) => {
     setCurrentTimeUnitStep(text);
@@ -77,92 +97,199 @@ const Activity: React.FC<any> = ({
   useEffect(() => {
     if (currentTimeUnitStep !== '1 giờ') {
       setCurrentActivityTime(30);
-      setCurrentTimeUnit('phút')
+      setCurrentTimeUnit('phút');
     } else {
       setCurrentActivityTime(1);
-      setCurrentTimeUnit('giờ')
+      setCurrentTimeUnit('giờ');
     }
   }, [currentTimeUnitStep]);
 
   const calculateCurrentKcal = useCallback(() => {
     if (currentTimeUnit !== 'giờ') {
-      setCurrentActivityKcal(Number((kcal/30 * currentActivityTime).toFixed(2)))
+      setCurrentActivityKcal(
+        Number(((kcal / 30) * currentActivityTime).toFixed(2)),
+      );
     } else {
-      setCurrentActivityKcal(Number((kcal/30 * currentActivityTime * 60).toFixed(2)))
-
+      setCurrentActivityKcal(
+        Number(((kcal / 30) * currentActivityTime * 60).toFixed(2)),
+      );
     }
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
 
   useEffect(() => {
     calculateCurrentKcal();
-  }, [currentActivityTime])
+  }, [currentActivityTime]);
 
   const handleAddTime = useCallback(() => {
-    setCurrentActivityTime(currentActivityTime + activityUnits[currentTimeUnitStep]);
+    setCurrentActivityTime(
+      currentActivityTime + activityUnits[currentTimeUnitStep],
+    );
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
-  const handleSubtractTime =useCallback(() => {
-    setCurrentActivityTime(currentActivityTime - activityUnits[currentTimeUnitStep]);
+  const handleSubtractTime = useCallback(() => {
+    setCurrentActivityTime(
+      currentActivityTime - activityUnits[currentTimeUnitStep],
+    );
   }, [currentTimeUnitStep, currentActivityTime, currentTimeUnit]);
 
+  const handleAccept = async () => {
+    const payload = {status: 'PUBLISHED'};
+    await acceptActivity(id, payload);
+    reload();
+  };
+
+  const handleReject = async () => {
+    const payload = {status: 'UNPUBLISHED'};
+    await acceptActivity(id, payload);
+    reload();
+  };
+
+  const handleDeleteItem = async () => {};
+
   return (
-    <TouchableOpacity style={styles.container} onPress={handleDetailActivity}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        type === 'ADMIN' && status === 'PENDING' && styles.pending,
+      ]}
+      onPress={handleDetailActivity}>
       <View style={styles.textarea}>
         <Text style={styles.text1}>{name}</Text>
         <Text style={styles.text2}>
           {kcal}kcal - {unit}
         </Text>
       </View>
-      <View style={styles.action}>
-        {type === 'ADMIN' ? (
-          <TouchableOpacity onPress={handleDelete} style={styles.delete}>
-            {!loading ? (
-              <Icon
-                name="delete"
-                size={20}
-                style={styles.icon}
-                color={Colors.black}
-              />
-            ) : (
-              <SmallLoading />
-            )}
-          </TouchableOpacity>
+      <View>
+        {viewType === 'HOME' ? (
+          <>
+            <View style={styles.action}>
+              <TouchableOpacity
+                onPress={handleDeleteItem}
+                style={styles.delete}>
+                {!loading ? (
+                  <Icon
+                    name="close"
+                    size={20}
+                    style={styles.icon}
+                    color={Colors.black}
+                  />
+                ) : (
+                  <SmallLoading />
+                )}
+              </TouchableOpacity>
+            </View>
+          </>
         ) : (
-          <View style={styles.icon1}>
-            {status === 'UNPUBLISHED' && (
-              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
-                <Icon1
-                  name="public"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
-              </TouchableOpacity>
-            )}
+          <>
+            {type === 'ADMIN' ? (
+              <View style={styles.action}>
+                {status === 'PENDING' ? (
+                  <>
+                    <TouchableOpacity
+                      onPress={handleAccept}
+                      style={styles.delete}>
+                      <Icon
+                        name="check"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleReject}
+                      style={styles.delete}>
+                      <Icon
+                        name="close"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <TouchableOpacity
+                    onPress={handleDelete}
+                    style={styles.delete}>
+                    {!loading ? (
+                      <Icon
+                        name="delete"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    ) : (
+                      <SmallLoading />
+                    )}
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <View style={styles.action}>
+                {type === 'ADMIN' ? (
+                  <TouchableOpacity
+                    onPress={handleDelete}
+                    style={styles.delete}>
+                    {!loading ? (
+                      <Icon
+                        name="delete"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    ) : (
+                      <SmallLoading />
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.icon1}>
+                    {!loading1 ? (
+                      <>
+                        {status === 'UNPUBLISHED' && (
+                          <TouchableOpacity
+                            onPress={handlePublic}
+                            style={styles.delete}>
+                            <Icon1
+                              name="public"
+                              size={20}
+                              style={styles.icon}
+                              color={Colors.black}
+                            />
+                          </TouchableOpacity>
+                        )}
 
-            {status === 'PENDING' && (
-              <TouchableOpacity onPress={handlePublic} style={styles.delete}>
-                <Icon
-                  name="hourglass"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
-              </TouchableOpacity>
-            )}
+                        {status === 'PENDING' && (
+                          <TouchableOpacity
+                            onPress={handlePublic}
+                            style={styles.delete}>
+                            <Icon
+                              name="hourglass"
+                              size={20}
+                              style={styles.icon}
+                              color={Colors.black}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </>
+                    ) : (
+                      <SmallLoading />
+                    )}
 
-            <TouchableOpacity onPress={handleAdd} style={styles.delete}>
-              {!loading ? (
-                <Icon
-                  name="plus"
-                  size={20}
-                  style={styles.icon}
-                  color={Colors.black}
-                />
-              ) : (
-                <SmallLoading />
-              )}
-            </TouchableOpacity>
-          </View>
+                    <TouchableOpacity onPress={handleAdd} style={styles.delete}>
+                      {!loading ? (
+                        <Icon
+                          name="plus"
+                          size={20}
+                          style={styles.icon}
+                          color={Colors.black}
+                        />
+                      ) : (
+                        <SmallLoading />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          </>
         )}
       </View>
       <Modal
@@ -170,18 +297,24 @@ const Activity: React.FC<any> = ({
         transparent={true}
         visible={modal}
         onRequestClose={() => {
-          console.log('Request has been close');
           setModal(false);
         }}>
+        <TouchableOpacity
+          style={{width: '100%', height: '100%'}}
+          onPress={handleClose}></TouchableOpacity>
         <View style={styles.modal}>
           <View style={styles.activityContainer}>
             <View style={styles.activityContainerHeader}>
               <View style={styles.activityTextContainer}>
                 <Text style={styles.activityName}>{name}</Text>
                 <View style={styles.activityInfo}>
-                  <Text style={styles.activityInfoText}>{currentActivityTime} {currentTimeUnit}</Text>
+                  <Text style={styles.activityInfoText}>
+                    {currentActivityTime} {currentTimeUnit}
+                  </Text>
                   <Text style={styles.activityInfoText}> - </Text>
-                  <Text style={styles.activityInfoText}>{currentActivityKcal} kcal</Text>
+                  <Text style={styles.activityInfoText}>
+                    {currentActivityKcal} kcal
+                  </Text>
                 </View>
               </View>
               <Icon
@@ -225,7 +358,7 @@ const Activity: React.FC<any> = ({
               <TouchableOpacity
                 style={styles.activityTimeAdjustButton}
                 onPress={handleSubtractTime}
-                disabled={currentActivityTime===0}>
+                disabled={currentActivityTime === 0}>
                 <Icon name="minus" size={25} color={Colors.black}></Icon>
               </TouchableOpacity>
             </View>
@@ -245,6 +378,7 @@ const Activity: React.FC<any> = ({
           </TouchableOpacity>
         </View>
       </Modal>
+      {quantity > 1 && <Text style={styles.quantity}>x{quantity}</Text>}
     </TouchableOpacity>
   );
 };
@@ -272,7 +406,7 @@ const styles = StyleSheet.create({
     width: 300,
     justifyContent: 'space-around',
     paddingLeft: 10,
-    flex: 1
+    flex: 1,
   },
   text1: {
     fontWeight: 'bold',
@@ -469,6 +603,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: 80,
     justifyContent: 'flex-end',
+  },
+  pending: {
+    backgroundColor: Colors.gray_green,
+    borderColor: Colors.gray_green,
+  },
+  quantity: {
+    position: 'absolute',
+    left: 2,
+    top: 2,
+    zIndex: 999,
+    color: Colors.error,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 
