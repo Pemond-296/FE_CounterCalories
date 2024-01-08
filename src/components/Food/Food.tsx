@@ -24,6 +24,7 @@ const Food: React.FC<any> = ({
   userId,
   viewType,
   reload,
+  quantity,
 }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,7 +72,7 @@ const Food: React.FC<any> = ({
       setLoading1(false);
     }, 1000);
     await publicFood(id, payload);
-    reload()
+    reload();
   };
 
   const handleUnPublic = async () => {
@@ -81,24 +82,30 @@ const Food: React.FC<any> = ({
       setLoading1(false);
     }, 1000);
     await publicFood(id, payload);
-    reload()
+    reload();
   };
 
   const handleAccept = async () => {
-    const payload = {status: 'PUBLISHED'}
+    const payload = {status: 'PUBLISHED'};
     const response = await acceptFood(id, payload);
-    console.log(response.data);
-    reload()
-  }
+    reload();
+  };
 
   const handleReject = async () => {
-    const payload = {status: 'UNPUBLISHED'}
+    const payload = {status: 'UNPUBLISHED'};
     await acceptFood(id, payload);
-    reload()
-  }
+    reload();
+  };
+
+  const handleDeleteItem = async () => {};
 
   return (
-    <TouchableOpacity style={[styles.container, type==="ADMIN" && status==="PENDING" && styles.pending]} onPress={handleDetailFood}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        type === 'ADMIN' && status === 'PENDING' && styles.pending,
+      ]}
+      onPress={handleDetailFood}>
       <Image
         source={{
           uri: 'http://' + img,
@@ -112,37 +119,15 @@ const Food: React.FC<any> = ({
         </Text>
       </View>
       <View>
-        {type === 'ADMIN' ? (
-          <View style={styles.action}>
-             {status === 'PENDING' ? (
-              <>
-                  <TouchableOpacity
-                    onPress={handleAccept}
-                    style={styles.delete}>
-                    <Icon
-                      name="check"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleReject}
-                    style={styles.delete}>
-                    <Icon
-                      name="close"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
-                  </TouchableOpacity>
-                </>
-              )
-              : (
-            <TouchableOpacity onPress={handleDelete} style={styles.delete}>
+        {viewType === 'HOME' ? (
+          <>
+            <View style={styles.action}>
+              <TouchableOpacity
+                onPress={handleDeleteItem}
+                style={styles.delete}>
                 {!loading ? (
                   <Icon
-                    name="delete"
+                    name="close"
                     size={20}
                     style={styles.icon}
                     color={Colors.black}
@@ -151,41 +136,85 @@ const Food: React.FC<any> = ({
                   <SmallLoading />
                 )}
               </TouchableOpacity>
-              )}
-          </View>
+            </View>
+          </>
         ) : (
-          <View style={styles.icon1}>
-            {!loading1 ? (
-              <>
-                {status === 'UNPUBLISHED' && (
+          <>
+            {type === 'ADMIN' ? (
+              <View style={styles.action}>
+                {status === 'PENDING' ? (
+                  <>
+                    <TouchableOpacity
+                      onPress={handleAccept}
+                      style={styles.delete}>
+                      <Icon
+                        name="check"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleReject}
+                      style={styles.delete}>
+                      <Icon
+                        name="close"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    </TouchableOpacity>
+                  </>
+                ) : (
                   <TouchableOpacity
-                    onPress={handlePublic}
+                    onPress={handleDelete}
                     style={styles.delete}>
-                    <Icon1
-                      name="public"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
+                    {!loading ? (
+                      <Icon
+                        name="delete"
+                        size={20}
+                        style={styles.icon}
+                        color={Colors.black}
+                      />
+                    ) : (
+                      <SmallLoading />
+                    )}
                   </TouchableOpacity>
                 )}
-
-                {status === 'PENDING' && (
-                  <TouchableOpacity
-                    onPress={handleUnPublic}
-                    style={styles.delete}>
-                    <Icon
-                      name="hourglass"
-                      size={20}
-                      style={styles.icon}
-                      color={Colors.black}
-                    />
-                  </TouchableOpacity>
-                )}
-              </>
+              </View>
             ) : (
-              <SmallLoading />
-            )}
+              <View style={styles.icon1}>
+                {!loading1 ? (
+                  <>
+                    {status === 'UNPUBLISHED' && (
+                      <TouchableOpacity
+                        onPress={handlePublic}
+                        style={styles.delete}>
+                        <Icon1
+                          name="public"
+                          size={20}
+                          style={styles.icon}
+                          color={Colors.black}
+                        />
+                      </TouchableOpacity>
+                    )}
+
+                    {status === 'PENDING' && (
+                      <TouchableOpacity
+                        onPress={handleUnPublic}
+                        style={styles.delete}>
+                        <Icon
+                          name="hourglass"
+                          size={20}
+                          style={styles.icon}
+                          color={Colors.black}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </>
+                ) : (
+                  <SmallLoading />
+                )}
 
                 <TouchableOpacity onPress={handleAdd} style={styles.delete}>
                   {!loading ? (
@@ -201,7 +230,10 @@ const Food: React.FC<any> = ({
                 </TouchableOpacity>
               </View>
             )}
-          </View>
+          </>
+        )}
+      </View>
+      {quantity > 1 && <Text style={styles.quantity}>x{quantity}</Text>}
     </TouchableOpacity>
   );
 };
@@ -219,6 +251,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginBottom: 10,
+    position: 'relative',
   },
   img: {
     height: 50,
@@ -267,6 +300,15 @@ const styles = StyleSheet.create({
   pending: {
     backgroundColor: Colors.gray_green,
     borderColor: Colors.gray_green,
+  },
+  quantity: {
+    position: 'absolute',
+    left: 2,
+    top: 2,
+    fontSize: 16,
+    zIndex: 999,
+    color: Colors.error,
+    fontWeight: 'bold',
   },
 });
 

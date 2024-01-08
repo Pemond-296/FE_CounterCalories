@@ -71,7 +71,7 @@ const AdminFood = () => {
   const [activityItem, setActivityItem] = useState<any>([]);
   const fetchPendingActivity = async () => {
     const {data} = await pendingActivity()
-    console.log(data);
+
     return data
   }
 

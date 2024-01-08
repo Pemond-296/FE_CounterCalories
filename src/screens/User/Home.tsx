@@ -96,7 +96,7 @@ const UserHome = () => {
       setWater(250 * (indexWater - 1));
     }
     const payload = {date: date, water: indexWater + 1};
-    const response = await updateDiary(user.id, payload);
+    await updateDiary(user.id, payload);
   };
 
   // Process food and activities
@@ -136,14 +136,12 @@ const UserHome = () => {
   const [daily, setDaily] = useState<any>({});
   const getDaily = async () => {
     const response = await viewDiary(user.id, date);
-    console.log(response);
-    setDaily(response.data);
+    setDaily(response.data)
     setIndexWater(response?.data?.statistics?.realWater || 0);
     setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
     setListActivities(response?.data?.activityList);
     setListFoods(response?.data?.foodList);
     setActive(true);
-
   };
   const isFocused = useIsFocused();
 
@@ -162,7 +160,7 @@ const UserHome = () => {
 
   const handleCreatePost = () => {
     //@ts-ignore
-    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities}});
+    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities, real: daily.statistics}});
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -413,6 +411,7 @@ const UserHome = () => {
                       type={'USER'}
                       userId={user.id}
                       viewType="HOME"
+                      quantity={item.minutes/30}
                     />
                   </View>
                 ))}
@@ -436,6 +435,7 @@ const UserHome = () => {
                       fat={item.fat}
                       userId={user.id}
                       viewType="HOME"
+                      quantity={item.amount/100}
                     />
                   </View>
                 ))}

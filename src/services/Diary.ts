@@ -29,3 +29,13 @@ export const viewDiary = async (userId: number, date: string) => {
         return err.response.data
     }
 }
+
+export const getDiarybyId = async (id: number) => {
+    try{
+        const response = await diaryAPI.get('/detail?diaryId='+ id)
+        return response.data
+    }
+    catch(err:any){
+        return err.response.data
+    }
+}

@@ -25,7 +25,6 @@ const AdminPerSon:React.FC<any> = () => {
   useEffect(() => {
     const fetchAllUser = async () => {
       const response = await viewAllUser()
-      console.log(response.data)
       setAllUser(response.data)
     }
     fetchAllUser()
@@ -91,7 +90,12 @@ const AdminPerSon:React.FC<any> = () => {
             allUser?.map((item: any, index: any) => (
               <ViewUser 
                 key={index} 
-
+                gender={item.gender}
+                age={item.age}
+                height={item.height}
+                id={item.id}
+                weight={item.weight}
+                name={item.username}
               />
             )))
           : (banUser &&

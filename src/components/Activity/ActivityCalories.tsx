@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {Colors} from '../../utils/Color';
 
-const DetailActivityCalories: React.FC<any> = ({name, calories}) => {
+const DetailActivityCalories: React.FC<any> = ({name, calories, quantity}) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.foodOverView}>
@@ -11,11 +11,11 @@ const DetailActivityCalories: React.FC<any> = ({name, calories}) => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.text1}>Calories</Text>
-          <Text style={styles.text1}>Số lượng</Text>
+          <Text style={styles.text1}>Thời gian</Text>
         </View>
         <View style={styles.body}>
-          <Text style={styles.text2}>{calories} kcal</Text>
-          <Text style={styles.text2}>30 phút</Text>
+          <Text style={styles.text2}>{calories*quantity} kcal</Text>
+          <Text style={styles.text2}>{30*quantity} phút</Text>
         </View>
       </View>
     </View>

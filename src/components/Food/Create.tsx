@@ -124,8 +124,7 @@ const CreateFood: React.FC<any> = ({onClose, reloadFood}) => {
         protein:data.protein,
       }
     const response = await createFood(payload)
-    console.log(response)
-    // Thoát form tạo
+
     handleExit()
     reloadFood()
   }

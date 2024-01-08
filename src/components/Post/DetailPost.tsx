@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -17,10 +17,13 @@ import {useNavigation} from '@react-navigation/native';
 import DetailFoodCalories from '../Food/FoodCalories';
 import Comment from './Comment';
 import {userData} from '../../utils/Storage';
+import {updateReaction, viewDetailPost} from '../../services/Post';
+import {getDiarybyId} from '../../services/Diary';
+import DetailActivityCalories from '../Activity/ActivityCalories';
 
-const DetailPost: React.FC<any> = () => {
+const DetailPost: React.FC<any> = ({route}) => {
   const navigation = useNavigation();
-
+  const data = route.params.data;
   const [user, setUser] = useState<any>({});
   useEffect(() => {
     const fetchData = async () => {
@@ -29,9 +32,13 @@ const DetailPost: React.FC<any> = () => {
     };
     fetchData();
   }, []);
+
   const [isLike, setIsLike] = useState<boolean>(false);
-  const handleLike = () => {
+  const handleLike = async () => {
+    const payload = {userId: user.id, postId: data.postId};
+    await updateReaction(payload);
     setIsLike(!isLike);
+    listData()
   };
 
   const [isFollow, setFollow] = useState<boolean>(false);
@@ -45,8 +52,37 @@ const DetailPost: React.FC<any> = () => {
 
   const handleUserLike = (action: string) => {
     //@ts-ignore
-    navigation.navigate("Follow",{data: action})
-  }
+    navigation.navigate('Follow', {data: action});
+  };
+
+  const [post, setPost] = useState<any>({});
+  const [comment, setComment] = useState<any>([]);
+  const[numberLike, setLike] = useState<any>([]);
+
+  const fetchData = async () => {
+    const response = await viewDetailPost(data.postId);
+    console.log(response.data);
+    setPost(response.data.post);
+    setComment(response.data.comment);
+    setLike(response.data.interaction);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // data o day
+  const [listFoods, setListFoods] = useState<any>([]);
+  const [listActivities, setListActivity] = useState<any>([]);
+  const [sum, setSum] = useState<any>({});
+  const listData = async () => {
+    const response = await getDiarybyId(data.diaryId);
+    setListFoods(response.data.foodList);
+    setListActivity(response.data.activityList);
+    setSum(response.data.statistics);
+  };
+  useEffect(() => {
+    listData();
+  }, []);
 
   return (
     <>
@@ -59,7 +95,7 @@ const DetailPost: React.FC<any> = () => {
         <TouchableOpacity style={styles.icon2} onPress={handleBack}>
           <Icon1 name="arrow-back" size={25} color={Colors.white} />
         </TouchableOpacity>
-        <Text style={styles.text8}>Bài viết của Pemond</Text>
+        <Text style={styles.text8}>Bài viết của {post?.username}</Text>
       </View>
       <ScrollView>
         <View style={styles.container}>
@@ -70,34 +106,34 @@ const DetailPost: React.FC<any> = () => {
                 source={require('../../assets/Pemond.jpg')}
               />
               <View style={styles.text}>
-                <Text style={styles.text1}>Pemond</Text>
+                <Text style={styles.text1}>{post?.username}</Text>
                 <Text style={styles.text2}>Người dùng</Text>
               </View>
             </View>
 
-            <TouchableOpacity
-              style={styles.follow}
-              onPress={() => handleFollow()}>
-              <View style={[styles.follow1, isFollow && styles.isfollow]}>
-                <Text style={[styles.text6, isFollow && styles.text7]}>
-                  {isFollow ? 'Đang theo dõi' : 'Theo dõi'}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            {user.id !== data.userId && (
+              <TouchableOpacity
+                style={styles.follow}
+                onPress={() => handleFollow()}>
+                <View style={[styles.follow1, isFollow && styles.isfollow]}>
+                  <Text style={[styles.text6, isFollow && styles.text7]}>
+                    {isFollow ? 'Đang theo dõi' : 'Theo dõi'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View style={styles.img}>
             <Image
               style={styles.img1}
-              source={require('../../assets/pepe.jpg')}
+              source={{uri: 'http://' + post?.image}}
             />
           </View>
           <View style={styles.footer}>
             <View style={styles.kcal}>
-              <Text style={styles.text3}>
-                Một bữa ăn hoàn hảo cùng những chú Pepe
-              </Text>
-              <Text style={styles.text4}>404kcal</Text>
+              <Text style={styles.text3}>{post?.content}</Text>
+              <Text style={styles.text4}>{sum?.realTdee || 0}kcal</Text>
             </View>
             <View style={styles.action}>
               <Octicons
@@ -115,10 +151,10 @@ const DetailPost: React.FC<any> = () => {
               />
             </View>
             <View style={styles.action}>
-              <TouchableOpacity onPress={() => handleUserLike("Like")}>
-                <Text>3 lượt thích</Text>
+              <TouchableOpacity onPress={() => handleUserLike('Like')}>
+                <Text>{numberLike?.length} lượt thích</Text>
               </TouchableOpacity>
-              <Text style={styles.text5}>0 bình luận</Text>
+              <Text style={styles.text5}>{comment?.length} bình luận</Text>
             </View>
           </View>
         </View>
@@ -128,23 +164,48 @@ const DetailPost: React.FC<any> = () => {
           <View style={styles.calory}>
             <View>
               <Text style={styles.text9}>Tổng năng lượng</Text>
-              <DetailFoodCalories calories={235} carbs={23} fat={12} protein={13} />
+              <DetailFoodCalories
+                calories={sum?.realTdee}
+                carbs={sum?.realCarbs}
+                fat={sum?.realFat}
+                protein={sum?.realProtein}
+                quantity={1}
+              />
             </View>
             <View>
               <Text style={styles.text9}>Chi tiết dinh dưỡng</Text>
-              {Array(10)
-                .fill(null)
-                .map((_, index) => (
-                  <View key={index} style={styles.detail}>
-                    <DetailFoodCalories foodName={'Socola'} unitType={'cái'} calories={235} carbs={23} fat={12} protein={13} />
-                  </View>
+              {listFoods &&
+                listFoods?.map((item: any, index: any) => (
+                  <DetailFoodCalories
+                    key={index}
+                    foodName={item.foodName}
+                    unitType={item.unitType}
+                    calories={item.calories}
+                    carbs={item.carbs}
+                    protein={item.protein}
+                    fat={item.fat}
+                    quantity={item.amount / 100}
+                  />
+                ))}
+              {listActivities &&
+                listActivities?.map((item: any, index: any) => (
+                  <DetailActivityCalories
+                    key={index}
+                    name={item.name}
+                    calories={item.caloriesConsume}
+                    quantity={item.minutes / 30}
+                  />
                 ))}
             </View>
           </View>
         )}
         <View style={styles.calory}>
           <Text style={styles.text9}>Bình luận</Text>
-          <Comment />
+          <Comment
+            postId={data.postId}
+            onComment={fetchData}
+            comment={comment}
+          />
         </View>
       </ScrollView>
     </>

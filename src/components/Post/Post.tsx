@@ -8,19 +8,32 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {Colors} from '../../utils/Color';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { userData } from '../../utils/Storage';
+import {userData} from '../../utils/Storage';
+import {updateReaction} from '../../services/Post';
 
-const Post:React.FC<any> = ({onAction, onCloseAction, user}) => {
-
+const Post: React.FC<any> = ({
+  onAction,
+  onCloseAction,
+  user,
+  content,
+  name,
+  img,
+  userId,
+  diaryId,
+  postId,
+  onPost
+}) => {
   const navigation = useNavigation();
 
   const [isLike, setIsLike] = useState<boolean>(false);
-  const handleLike = () => {
+  const handleLike = async () => {
+    const payload = {userId: userId, postId: postId};
+    const response = await updateReaction(payload);
     setIsLike(!isLike);
   };
 
@@ -30,103 +43,111 @@ const Post:React.FC<any> = ({onAction, onCloseAction, user}) => {
   };
 
   const handleAction = () => {
-    onAction()
+    onAction();
   };
   const handlePressOut = (e: any) => {
-    onCloseAction()
+    onCloseAction();
   };
+
+  const [user1, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  }, []);
 
   const handleDetail = () => {
     //@ts-ignore
-    navigation.navigate("DetailPost")
-  }
+    navigation.navigate('DetailPost', {
+      data: {userId: userId, diaryId: diaryId, postId: postId},
+    });
+  };
 
   const handleUser = () => {
     //@ts-ignore
-    navigation.navigate("DetailUser")
-  }
+    navigation.navigate('DetailUser');
+  };
 
   return (
     <TouchableWithoutFeedback onPressOut={handlePressOut}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.name} onPress={handleUser}>
-              <Image
-                style={styles.avatar}
-                source={require('../../assets/Pemond.jpg')}
-              />
-              <View style={styles.text}>
-                <Text style={styles.text1}>Pemond</Text>
-                <Text style={styles.text2}>Người dùng</Text>
-              </View>
-            </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.name} onPress={handleUser}>
+            <Image
+              style={styles.avatar}
+              source={require('../../assets/Pemond.jpg')}
+            />
+            <View style={styles.text}>
+              <Text style={styles.text1}>{name}</Text>
+              <Text style={styles.text2}>Người dùng</Text>
+            </View>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.follow}
-              onPress={() => handleFollow()}>
+          <TouchableOpacity
+            style={styles.follow}
+            onPress={() => handleFollow()}>
+            {user1.id !== user.id && (
               <View style={[styles.follow1, isFollow && styles.isfollow]}>
                 <Text style={[styles.text6, isFollow && styles.text7]}>
                   {isFollow ? 'Đang theo dõi' : 'Theo dõi'}
                 </Text>
               </View>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity onPress={() => handleDetail()}>
-            <View style={styles.img}>
-              <Image
-                style={styles.img1}
-                source={require('../../assets/pepe.jpg')}
-              />
-            </View>
+            )}
           </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <View style={styles.kcal}>
-              <Text style={styles.text3}>
-                Một bữa ăn hoàn hảo cùng những chú Pepe
-              </Text>
-              <Text style={styles.text4}>404kcal</Text>
-            </View>
-            <View style={styles.action}>
-              <Octicons
-                name={isLike ? 'heart-fill' : 'heart'}
-                size={30}
-                style={styles.icon}
-                color={isLike ? Colors.error : Colors.black}
-                onPress={() => handleLike()}
-              />
-              <Octicons
-                name="comment"
-                size={30}
-                style={styles.icon}
-                color={Colors.black}
-              />
-
-              {user && user.role === "ADMIN" ? (
-                <Icon
-                  name="dots-vertical"
-                  size={35}
-                  color={Colors.black}
-                  style={styles.delete}
-                  onPress={() => handleAction()}
-                />
-              ) : (
-                <Ionicon
-                  name="warning-outline"
-                  size={36}
-                  style={styles.icon1}
-                  color={Colors.black}
-                  onPress={() => handleAction()}
-                />
-              )}
-            </View>
-            <View style={styles.action}>
-              <Text>3 lượt thích</Text>
-              <Text style={styles.text5}>0 bình luận</Text>
-            </View>
-          </View>
         </View>
+
+        <TouchableOpacity onPress={() => handleDetail()}>
+          <View style={styles.img}>
+            <Image style={styles.img1} source={{uri: 'http://' + img}} />
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.footer}>
+          <View style={styles.kcal}>
+            <Text style={styles.text3}>{content}</Text>
+            {/* <Text style={styles.text4}>404kcal</Text> */}
+          </View>
+          <View style={styles.action}>
+            <Octicons
+              name={isLike ? 'heart-fill' : 'heart'}
+              size={30}
+              style={styles.icon}
+              color={isLike ? Colors.error : Colors.black}
+              onPress={() => handleLike()}
+            />
+            <Octicons
+              name="comment"
+              size={30}
+              style={styles.icon}
+              color={Colors.black}
+            />
+
+            {user && user.role === 'ADMIN' ? (
+              <Icon
+                name="dots-vertical"
+                size={35}
+                color={Colors.black}
+                style={styles.delete}
+                onPress={() => handleAction()}
+              />
+            ) : (
+              <Ionicon
+                name="warning-outline"
+                size={36}
+                style={styles.icon1}
+                color={Colors.black}
+                onPress={() => handleAction()}
+              />
+            )}
+          </View>
+          {/* <View style={styles.action}>
+            <Text>0 lượt thích</Text>
+            <Text style={styles.text5}>0 bình luận</Text>
+          </View> */}
+        </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -258,7 +279,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 'auto',
   },
-
 });
 
 export default Post;

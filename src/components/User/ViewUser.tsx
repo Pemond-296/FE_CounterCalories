@@ -11,7 +11,7 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { SmallLoading } from '../Loading';
 import { useNavigation } from '@react-navigation/native';
 
-const ViewUser:React.FC<any> = () => {
+const ViewUser:React.FC<any> = ({id, age, gender, height, name, weight}) => {
 
     const navigation = useNavigation()
 
@@ -51,10 +51,10 @@ const ViewUser:React.FC<any> = () => {
             />
             <View style={styles.textarea}>
                 <Text style={styles.text1}>
-                    Pemond
+                    {name}
                 </Text>
                 <Text style={styles.text2}>
-                    Nam - 50kg - 175cm 
+                    {gender === "Male" ? "Nam" : "Nữ"} - {weight}kg - {height}cm 
                 </Text>
             </View>
             <View style={styles.action}>

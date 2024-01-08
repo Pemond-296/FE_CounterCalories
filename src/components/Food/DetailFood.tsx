@@ -70,7 +70,7 @@ const DetailFood: React.FC<any> = ({route}) => {
   };
 
   return (
-    <View style={{position: 'relative', paddingBottom: 0}}>
+    <View style={{position: 'relative', paddingBottom: 60}}>
       <StatusBar
         translucent
         backgroundColor="transparent"

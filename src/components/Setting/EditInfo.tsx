@@ -47,7 +47,6 @@ const EditInfo: React.FC<any> = ({onClose, user}) => {
       Alert.alert('Update complete!');
     }
   };
-  console.log(user);
 
   const {
     register,

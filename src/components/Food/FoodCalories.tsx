@@ -9,13 +9,15 @@ const DetailFoodCalories: React.FC<any> = ({
   carbs,
   protein,
   fat,
+  quantity
 }) => {
+
   return (
     <View style={styles.mainContainer}>
       {foodName && unitType ? (
         <View style={styles.foodOverView}>
           <Text style={styles.foodName}>{foodName}</Text>
-          <Text style={styles.foodUnit}>{unitType}</Text>
+          <Text style={styles.foodUnit}>{100*quantity}g</Text>
         </View>
       ) : (
         <></>
@@ -28,10 +30,10 @@ const DetailFoodCalories: React.FC<any> = ({
           <Text style={styles.text1}>Chất béo</Text>
         </View>
         <View style={styles.body}>
-          <Text style={styles.text2}>{calories} kcal</Text>
-          <Text style={styles.text2}>{carbs} g</Text>
-          <Text style={styles.text2}>{protein} g</Text>
-          <Text style={styles.text2}>{fat} g</Text>
+          <Text style={styles.text2}>{calories*quantity} kcal</Text>
+          <Text style={styles.text2}>{carbs*quantity} g</Text>
+          <Text style={styles.text2}>{protein*quantity} g</Text>
+          <Text style={styles.text2}>{fat*quantity} g</Text>
         </View>
       </View>
     </View>

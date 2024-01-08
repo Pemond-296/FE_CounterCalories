@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {
   StyleSheet,
@@ -12,44 +12,84 @@ import {Colors} from '../../utils/Color';
 
 import Icon from 'react-native-vector-icons/AntDesign';
 import Send from 'react-native-vector-icons/Feather';
+import {userData} from '../../utils/Storage';
+import {createComment, deleteComment} from '../../services/Post';
+import moment from 'moment';
 
-const Comment = () => {
+const Comment: React.FC<any> = ({postId, onComment, comment}) => {
+  const [user, setUser] = useState<any>({});
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await userData();
+      setUser(response);
+    };
+    fetchData();
+  }, []);
+
   const [content, setContent] = useState<string>('');
-  const handleComment = () => {};
+  const handleComment = async () => {
+    const payload = {
+      postId: postId,
+      content: content,
+      commentFromUserId: user.id,
+    };
+    await createComment(payload);
+    setContent('');
+    onComment();
+  };
+
+  const formatDate = (date: string) => {
+    return moment(date).format('DD/MM/YYYY HH:mm');
+  };
+
+  const handleDelete = async (id: number) => {
+    await deleteComment(id);
+    onComment();
+  };
 
   return (
     <View style={styles.container}>
-      {Array(3)
-        .fill(null)
-        .map((_, index) => (
-          <View key={index} style={styles.comment}>
+      {comment &&
+        comment?.map((item: any, index: number) => (
+          <View style={styles.comment}>
             <View style={styles.header}>
               <Image
                 source={require('../../assets/Pemond.jpg')}
                 style={styles.img}
               />
               <View style={styles.textfield}>
-                <Text style={styles.name}>Dương Vũ</Text>
-                <Text style={styles.time}>10/12/2023 9:58</Text>
+                <Text style={styles.name}>{item?.commentFromUsername}</Text>
+                <Text style={styles.time}>{formatDate(item?.createdAt)}</Text>
               </View>
-              <TouchableOpacity style={styles.icon}>
-                <Icon name="edit" size={20} color={Colors.black} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.icon1}>
-                <Icon name="delete" size={20} color={Colors.black} />
-              </TouchableOpacity>
+              {(item?.commentFromUserId === user.id || user.role === 'ADMIN') && (
+                <>
+                  <TouchableOpacity style={styles.icon}>
+                    <Icon name="edit" size={20} color={Colors.black} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.icon1}
+                    onPress={() => handleDelete(item.id)}>
+                    <Icon name="delete" size={20} color={Colors.black} />
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
             <TextInput
               multiline
               style={styles.textInput}
               editable={false}
-              value="Sao các chú Pepe lại trông như thế này, trông có giống mấy thằng nghiện không"
+              value={item?.content}
             />
           </View>
         ))}
       <View style={styles.commentfield}>
         <Image source={require('../../assets/Pemond.jpg')} style={styles.img} />
-        <TextInput style={styles.text} placeholder="Bình luận tại đây ..." />
+        <TextInput
+          style={styles.text}
+          value={content}
+          placeholder="Bình luận tại đây ..."
+          onChangeText={e => setContent(e)}
+        />
         <TouchableOpacity style={styles.icon2} onPress={handleComment}>
           <Send name="send" size={20} color={Colors.black} />
         </TouchableOpacity>

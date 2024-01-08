@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Dimensions,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -18,7 +17,6 @@ import {useNavigation} from '@react-navigation/native';
 //@ts-ignore
 import {getToday} from 'react-native-modern-datepicker';
 import DetailFoodCalories from '../Food/FoodCalories';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import DetailActivityCalories from '../Activity/ActivityCalories';
 import {imageAPI} from '../../services/Image';
 import {
@@ -26,20 +24,23 @@ import {
   launchImageLibrary,
 } from 'react-native-image-picker';
 import {LargeLoading} from '../Loading';
+import { createPost } from '../../services/Post';
 
 export const CreatePost: React.FC<any> = ({route}) => {
   const navigation = useNavigation();
   const user = route.params.data.user;
   const listFoods = route.params.data.listFoods;
   const listActivities = route.params.data.listActivities;
+  const real = route.params.data.real;
   const today = getToday();
+
   const [totalEnergy, setTotalEnergy] = useState<any>({
-    calories: 0,
-    carbs: 0,
-    protein: 0,
-    fat: 0,
+    calories: real.realTdee,
+    carbs: real.realCarbs,
+    protein: real.realProtein,
+    fat: real.realFat,
   });
-  const [imgUrl, setImgUrl] = useState<string>('');
+
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -60,32 +61,28 @@ export const CreatePost: React.FC<any> = ({route}) => {
       setLoading(false);
     });
     const response: any = await imageAPI(formData);
-    setImgUrl(response.data.objectUrl);
+    setImgUrl(response.data.objectUrl)
   };
+  const [imgUrl, setImgUrl] = useState<string>('');
 
-  console.log(listFoods);
-  console.log(today);
-
+  const convertDate = (date: string) => {
+    return date.split('/').reverse().join('/');
+  };
   const handleBack = () => {
     navigation.goBack();
   };
 
-  useEffect(() => {
-    if (listFoods && listFoods.length > 0) {
-      const energy = listFoods.reduce(
-        (res: any, item: any) => {
-          res.calories = (res.calories || 0) + item.calories;
-          res.carbs = (res.carbs || 0) + item.carbs;
-          res.protein = (res.protein || 0) + item.protein;
-          res.fat = (res.fat || 0) + item.fat;
-          return res;
-        },
-        {calories: 0, carbs: 0, protein: 0, fat: 0},
-      );
+  const [content, setContent] = useState<string>('')
 
-      setTotalEnergy(energy);
+  const handleCreate = async () => {
+    const payload = {image: imgUrl, content: content, diaryId: real.diaryId}
+    const respone = await createPost(payload)
+    if(respone.status.code === 200){
+      //@ts-ignore
+      handleBack();
     }
-  }, [listFoods]);
+  }
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <StatusBar
@@ -98,9 +95,6 @@ export const CreatePost: React.FC<any> = ({route}) => {
           <Ionicons name="arrow-back" size={25} color={Colors.white}></Ionicons>
         </TouchableOpacity>
         <Text style={styles.appHeaderText}>Tạo bài viết</Text>
-        <TouchableOpacity style={styles.createButton}>
-          <Text style={styles.createText}>Tạo</Text>
-        </TouchableOpacity>
       </View>
       <View style={styles.mainContainer}>
         <View style={styles.header}>
@@ -109,7 +103,7 @@ export const CreatePost: React.FC<any> = ({route}) => {
             style={styles.avatar}></Image>
           <View style={styles.headerContent}>
             <Text style={styles.usernameText}>{user.username}</Text>
-            <Text>Ngày: {today}</Text>
+            <Text>Ngày: {convertDate(today)}</Text>
             <View style={styles.headerActions}>
               <TouchableOpacity onPress={pickImage}>
                 <MaterialIcons
@@ -135,6 +129,9 @@ export const CreatePost: React.FC<any> = ({route}) => {
               </TouchableOpacity>
             </View>
           </View>
+          <TouchableOpacity style={styles.createButton} onPress={handleCreate}>
+            <Text style={styles.createText}>Tạo</Text>
+          </TouchableOpacity>
         </View>
         <View
           style={[
@@ -144,14 +141,18 @@ export const CreatePost: React.FC<any> = ({route}) => {
           <TextInput
             placeholder="Bạn muốn chia sẻ điểu gì?..."
             style={styles.descriptionText}
-            placeholderTextColor="#C1C3BD"></TextInput>
+            placeholderTextColor="#C1C3BD"
+            onChangeText={(e) => {
+              setContent(e)
+            }}
+            />
           {selectedImage ? (
             loading ? (
-              <View style={styles.image}>
+              <View style={styles.img}>
                 <LargeLoading />
               </View>
             ) : (
-              <Image source={{uri: imgUrl}} style={styles.image}></Image>
+              <Image source={{uri: selectedImage}} style={styles.img}></Image>
             )
           ) : (
             <></>
@@ -165,10 +166,12 @@ export const CreatePost: React.FC<any> = ({route}) => {
             calories={totalEnergy.calories}
             carbs={totalEnergy.carbs}
             protein={totalEnergy.protein}
-            fat={totalEnergy.fat}></DetailFoodCalories>
+            fat={totalEnergy.fat}
+            quantity={1}
+            />
           <View style={styles.foodContainer}>
             <View style={styles.diaryHeader}>
-              <Text style={styles.diaryHeaderText}>Thức ăn</Text>
+              <Text style={styles.diaryHeaderText}>Thực phẩm</Text>
             </View>
             {listFoods &&
               listFoods?.map((item: any, index: any) => (
@@ -179,7 +182,9 @@ export const CreatePost: React.FC<any> = ({route}) => {
                   calories={item.calories}
                   carbs={item.carbs}
                   protein={item.protein}
-                  fat={item.fat}></DetailFoodCalories>
+                  fat={item.fat}
+                  quantity={item.amount/100}
+                />
               ))}
           </View>
 
@@ -192,7 +197,9 @@ export const CreatePost: React.FC<any> = ({route}) => {
                 <DetailActivityCalories
                   key={index}
                   name={item.name}
-                  calories={item.caloriesConsume}></DetailActivityCalories>
+                  calories={item.caloriesConsume}
+                  quantity={item.minutes/30}
+                  />
               ))}
           </View>
         </View>
@@ -220,29 +227,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerBackIcon: {
-    paddingLeft: 10,
     zIndex: 999,
-    flex: 1,
+    position: 'absolute',
+    left: 10,
+    bottom: 12,
   },
   createButton: {
-    flex: 1,
-    alignItems: 'flex-end',
-    marginRight: 10,
-    marginTop: 3,
     zIndex: 999,
+    borderColor: Colors.gender,
+    backgroundColor: Colors.gender,
+    borderWidth: 2,
+    paddingVertical: 2,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    position: 'absolute',
+    right: 0,
+    top: 10,
   },
   createText: {
     color: Colors.white,
-    borderColor: Colors.white,
-    borderWidth: 2,
-    paddingVertical: 1,
-    paddingHorizontal: 10,
-    borderRadius: 20,
     fontSize: 18,
+    fontWeight: '700',
     textAlign: 'center',
   },
   mainContainer: {
     backgroundColor: Colors.white,
+    position: 'relative',
   },
   header: {
     flexDirection: 'row',
@@ -301,6 +311,6 @@ const styles = StyleSheet.create({
   activityContainer: {},
   img: {
     width: '100%',
-    height: 300
-  }
+    height: 300,
+  },
 });
