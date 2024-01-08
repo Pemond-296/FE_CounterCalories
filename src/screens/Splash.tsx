@@ -14,10 +14,18 @@ const Splash = () => {
   const fetchData = async () => {
     const data: any = await userData();
     if (data?.role === "USER") {
-      setTimeout(() => {
-        //@ts-ignore
-        navigation.navigate('ScreenUser');
-      }, 1500);
+      if(data?.status === "ACTIVE"){
+        setTimeout(() => {
+          //@ts-ignore
+          navigation.navigate('ScreenUser');
+        }, 1500);
+      }
+      else{
+        setTimeout(() => {
+          //@ts-ignore
+          navigation.navigate('banScreen');
+        }, 1500);
+      }
     } 
     else if(data?.role === "ADMIN") {
       setTimeout(() => {

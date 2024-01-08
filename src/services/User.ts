@@ -96,3 +96,12 @@ export const viewBanUser = async () => {
         return err.response
     }
 }
+
+export const banUser = async (id: number, payload: any) => {
+    try{
+        const response = await userAPI.put('/'+id, payload)
+        return response.data
+    }catch(err : any){
+        return err.response
+    }
+}

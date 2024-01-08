@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {storage, userData} from '../../utils/Storage';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { viewListPost } from '../../services/Post';
 
 const AdminHome = () => {
   const navigation = useNavigation();
@@ -65,6 +66,16 @@ const AdminHome = () => {
     };
     fetchData();
   },[]);
+
+  const [listPost, setListPost] = useState<any>([])
+  const fetchPost = async () => {
+      const response = await viewListPost()
+      setListPost(response.data);
+  }
+  useEffect(() => {
+      fetchPost()
+  },[])
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -93,16 +104,22 @@ const AdminHome = () => {
         onScroll={handleScroll}
         style={[styles.viewarea, action && styles.action]}
         scrollEnabled={action ? false : true}>
-        {Array(activePost)
-          .fill(null)
-          .map((_, index) => (
-            <Post
-              onAction={isAction}
-              onCloseAction={onCloseAction}
-              key={index}
-              user={user}
-            />
-          ))}
+      {listPost && listPost?.map((item: any, index: any) => (
+                    <Post 
+                        onAction = {isAction}
+                        onCloseAction={onCloseAction}
+                        key={index}
+                        user={user}
+                        content={item.content}
+                        name={item.username}
+                        img={item.image}
+                        kcal={item.kcal}
+                        userId={item.userId}
+                        diaryId={item.diaryId}
+                        postId = {item.id}
+                        onPost ={fetchPost}
+                    />
+                ))}
       </ScrollView>
     </View>
   );

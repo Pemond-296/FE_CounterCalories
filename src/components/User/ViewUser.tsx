@@ -10,8 +10,9 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { SmallLoading } from '../Loading';
 import { useNavigation } from '@react-navigation/native';
+import { banUser } from '../../services/User';
 
-const ViewUser:React.FC<any> = ({id, age, gender, height, name, weight}) => {
+const ViewUser:React.FC<any> = ({id, age, gender, height, name, weight, onChange}) => {
 
     const navigation = useNavigation()
 
@@ -33,11 +34,14 @@ const ViewUser:React.FC<any> = ({id, age, gender, height, name, weight}) => {
 
     
   const [loadingBan, setLoadingBan] = useState<boolean>(false);
-    const handleBan = () => {
+    const handleBan = async () => {
         setLoadingBan(true);
         setTimeout(() => {
           setLoadingBan(false);
         }, 1000);
+        const payload = {status: "BAN"}
+        await banUser(id, payload)
+        onChange()
     }
 
     return (

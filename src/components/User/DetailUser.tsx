@@ -61,27 +61,27 @@ const DetailUser = () => {
         </View>
         <View style={styles.user}>
           <View style={styles.textarea}>
-            <Text style={styles.text3}>52</Text>
+            <Text style={styles.text3}>1</Text>
             <Text style={styles.text4}>Bài viết</Text>
           </View>
           <TouchableOpacity 
             style={styles.textarea}
             onPress={() => handleFollow("Follower")}
           >
-            <Text style={styles.text3}>100</Text>
+            <Text style={styles.text3}>0</Text>
             <Text style={styles.text4}>Follower</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.textarea}
             onPress={() => handleFollow("Following")}
           >
-            <Text style={styles.text3}>100</Text>
+            <Text style={styles.text3}>0</Text>
             <Text style={styles.text4}>Following</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.imgarea}>
-          {Array(50)
+          {Array(1)
             .fill(null)
             .map((_, index) => (
               <TouchableOpacity key={index} style={styles.touch} onPress={handlePost}>

@@ -22,22 +22,27 @@ const AdminPerSon:React.FC<any> = () => {
 
   const [allUser, setAllUser] = useState<any | null>(null);
 
+  const fetchAllUser = async () => {
+    const response = await viewAllUser()
+    setAllUser(response.data)
+  }
   useEffect(() => {
-    const fetchAllUser = async () => {
-      const response = await viewAllUser()
-      setAllUser(response.data)
-    }
     fetchAllUser()
-  }, [active])
+  }, [])
 
   const [banUser, setBanUser] = useState<any>([]);
+  const fetchBanUser = async () => {
+    const response = await viewBanUser()
+    setAllUser(response.data)
+  }
   useEffect(() => {
-    const fetchBanUser = async () => {
-      const response = await viewBanUser()
-      setAllUser(response.data)
-    }
     fetchBanUser()
-  }, [active])
+  }, [])
+
+  const onChange = () => {
+    fetchAllUser()
+    fetchBanUser()
+  }
 
   return (
     <>
@@ -96,6 +101,7 @@ const AdminPerSon:React.FC<any> = () => {
                 id={item.id}
                 weight={item.weight}
                 name={item.username}
+                onChange={onChange}
               />
             )))
           : (banUser &&

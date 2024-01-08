@@ -8,7 +8,7 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import {Colors} from '../../utils/Color';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon1 from 'react-native-vector-icons/Entypo';
@@ -136,13 +136,16 @@ const UserHome = () => {
   const [daily, setDaily] = useState<any>({});
   const getDaily = async () => {
     const response = await viewDiary(user.id, date);
-    setDaily(response.data)
+    setDaily(response.data);
     setIndexWater(response?.data?.statistics?.realWater || 0);
     setWater(Number(response?.data?.statistics?.realWater * 250) || 0);
     setListActivities(response?.data?.activityList);
     setListFoods(response?.data?.foodList);
-    setActive(true);
-  };
+    if (response.data.totalConsumes !== null && response.data.totalConsumes !== 0 ) {
+      setActive(true);
+    }
+  }
+  
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -160,7 +163,14 @@ const UserHome = () => {
 
   const handleCreatePost = () => {
     //@ts-ignore
-    navigation.navigate("CreatePost", {data:{user: user, listFoods: listFoods, listActivities: listActivities, real: daily.statistics}});
+    navigation.navigate('CreatePost', {
+      data: {
+        user: user,
+        listFoods: listFoods,
+        listActivities: listActivities,
+        real: daily.statistics,
+      },
+    });
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -342,7 +352,6 @@ const UserHome = () => {
           <View style={styles.fieldwater}>
             <Text style={styles.text8}>Bạn đã uống bao nhiêu nước</Text>
             <Text style={styles.text9}>
-              {' '}
               {water}/{goals?.water}ml
             </Text>
           </View>
@@ -374,9 +383,11 @@ const UserHome = () => {
       <View style={styles.container}>
         <View style={styles.fieldwater}>
           <Text style={styles.text8}>Chi tiết dinh dưỡng</Text>
-          <TouchableOpacity style={styles.share} onPress={handleCreatePost}>
-            <Text style={styles.text5}>Chia sẻ</Text>
-          </TouchableOpacity>
+          {active && (
+            <TouchableOpacity style={styles.share} onPress={handleCreatePost}>
+              <Text style={styles.text5}>Chia sẻ</Text>
+            </TouchableOpacity>
+          )}
         </View>
         {!active ? (
           <View style={styles.container2}>
@@ -411,7 +422,7 @@ const UserHome = () => {
                       type={'USER'}
                       userId={user.id}
                       viewType="HOME"
-                      quantity={item.minutes/30}
+                      quantity={item.minutes / 30}
                     />
                   </View>
                 ))}
@@ -435,7 +446,7 @@ const UserHome = () => {
                       fat={item.fat}
                       userId={user.id}
                       viewType="HOME"
-                      quantity={item.amount/100}
+                      quantity={item.amount / 100}
                     />
                   </View>
                 ))}

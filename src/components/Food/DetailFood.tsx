@@ -273,7 +273,7 @@ const DetailFood: React.FC<any> = ({route}) => {
                 backgroundColor="#ddd"
               />
               <View style={styles.gauge}>
-                <Text style={styles.gaugeText}>290</Text>
+                <Text style={styles.gaugeText}>70</Text>
                 <Text style={styles.gaugeText1}>phút</Text>
               </View>
               <Text style={styles.text10}>Chạy bộ</Text>
@@ -292,7 +292,7 @@ const DetailFood: React.FC<any> = ({route}) => {
                 backgroundColor="#ddd"
               />
               <View style={styles.gauge}>
-                <Text style={styles.gaugeText}>360</Text>
+                <Text style={styles.gaugeText}>120</Text>
                 <Text style={styles.gaugeText1}>phút</Text>
               </View>
               <Text style={styles.text10}>Đi bộ</Text>

@@ -31,6 +31,7 @@ import DetailUser from './src/components/User/DetailUser';
 import Follow from './src/components/User/Follow';
 import Setting from './src/screens/User/Setting';
 import {CreatePost} from './src/components/Post/CreatePost';
+import BanScreen from './src/screens/Ban';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -139,24 +140,20 @@ const AppChild = () => {
         screenOptions={{headerShown: false}}
         initialRouteName="Splash">
         <Stack.Screen name="Splash" component={Splash} />
-
         <Stack.Screen name="ScreenAdmin" component={AdminScreen} />
-
         <Stack.Screen name="ScreenUser" component={UserScreen} />
-
         <Stack.Screen name="DetailPost" component={DetailPost} />
         <Stack.Screen name="DetailFood" component={DetailFood} />
         <Stack.Screen name="DetailUser" component={DetailUser} />
         <Stack.Screen name="CreatePost" component={CreatePost} />
-
         <Stack.Screen name="Follow" component={Follow} />
         <Stack.Screen name="Setting" component={Setting} />
-
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="setInformation" component={SetInformation} />
         <Stack.Screen name="setGoal" component={SetGoal} />
         <Stack.Screen name="reviewIndex" component={Review} />
+        <Stack.Screen name='banScreen' component={BanScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

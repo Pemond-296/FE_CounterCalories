@@ -84,6 +84,8 @@ const DetailPost: React.FC<any> = ({route}) => {
     listData();
   }, []);
 
+  console.log(numberLike)
+
   return (
     <>
       <StatusBar

@@ -147,25 +147,25 @@ const UserPersonal = () => {
 
         <View style={styles.othersInfoContainer}>
           <View style={styles.textarea}>
-            <Text style={styles.numberText}>52</Text>
+            <Text style={styles.numberText}>1</Text>
             <Text style={styles.othersInfoText}>Bài viết</Text>
           </View>
           <TouchableOpacity
             style={styles.textarea}
             onPress={() => handleFollow('Follower')}>
-            <Text style={styles.numberText}>100</Text>
+            <Text style={styles.numberText}>0</Text>
             <Text style={styles.othersInfoText}>Follower</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.textarea}
             onPress={() => handleFollow('Following')}>
-            <Text style={styles.numberText}>100</Text>
+            <Text style={styles.numberText}>0</Text>
             <Text style={styles.othersInfoText}>Following</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.postContainer}>
-          {Array(50)
+          {Array(1)
             .fill(null)
             .map((_, index) => (
               <TouchableOpacity
@@ -283,6 +283,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginLeft: -imageMargin,
     backgroundColor: Colors.white,
+    minHeight: 450,
   },
   postImg: {
     width: imageWidth,

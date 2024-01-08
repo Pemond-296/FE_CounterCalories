@@ -20,6 +20,7 @@ const UserPost = () => {
       setTimeout(() => {
         setActivePost(3)
         setRefreshing(false); 
+        fetchPost()
       }, 200); 
     };
   
